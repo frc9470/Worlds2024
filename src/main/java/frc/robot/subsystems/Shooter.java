@@ -16,7 +16,7 @@ public class Shooter extends VerticalArm {
     private final PIDController bottomPID;
     private final SimpleMotorFeedforward topFF;
     private final SimpleMotorFeedforward bottomFF;
-    private final double flywheelSetpoint = 0.0;
+    private double flywheelSetpoint = 0.0;
 
 
     public Shooter() {
@@ -55,10 +55,7 @@ public class Shooter extends VerticalArm {
         return bottom.getEncoder().getVelocity();
     }
 
-    public void setShooter(double speed) {
-        top.set(speed);
-        bottom.set(speed);
-    }
+
 
     public void setTop(double volts) {
         top.setVoltage(volts);
@@ -68,14 +65,19 @@ public class Shooter extends VerticalArm {
         bottom.setVoltage(volts);
     }
 
-    public void setShooterControl(double topSpeed, double bottomSpeed) {
+    private void setShooterControl(double topSpeed, double bottomSpeed) {
         setTop(topPID.calculate(getTopVelocityRPM(), topSpeed) + topFF.calculate(topSpeed));
         setBottom(bottomPID.calculate(getBottomVelocityRPM(), bottomSpeed) + bottomFF.calculate(bottomSpeed));
     }
 
-    public void setShooterControl(double speed){
+    private void setShooterControl(double speed){
         setShooterControl(speed, speed);
     }
+
+    public void setShooter(double speed) {
+        this.flywheelSetpoint = speed;
+    }
+
 
     public void setFeeder(double speed) {
         feeder.set(speed);
@@ -87,6 +89,39 @@ public class Shooter extends VerticalArm {
     public Command armToAmp() {return armToPos(()-> AMP_POS);}
     public Command armToFeed() {return armToPos(()-> FEED_POS);}
 
+    public Command runFeeder(double speed) {
+        return new Command() {
+            @Override
+            public void initialize() {
+                super.initialize();
+                feeder.set(speed);
+            }
 
+            @Override
+            public void end(boolean interrupted) {
+                super.end(interrupted);
+                feeder.set(0);
+            }
+        };
+    }
+
+    public Command runShooter(double speed) {
+        return new Command() {
+            @Override
+            public void initialize() {
+                super.initialize();
+                setShooter(speed);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return Math.abs(getTopVelocityRPM() - speed) < 100;
+            }
+        };
+    }
+
+    public Command stopShooter() {
+        return runShooter(0);
+    }
 
 }

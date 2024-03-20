@@ -24,8 +24,8 @@ public final class Constants {
 
     public static final class AutonConstants {
 
-        public static final PIDConstants TRANSLATION_PID = new PIDConstants(0.7, 0, 0);
-        public static final PIDConstants ANGLE_PID = new PIDConstants(0.4, 0, 0.01);
+        public static final com.pathplanner.lib.util.PIDConstants TRANSLATION_PID = new com.pathplanner.lib.util.PIDConstants(0.7, 0, 0);
+        public static final com.pathplanner.lib.util.PIDConstants ANGLE_PID = new com.pathplanner.lib.util.PIDConstants(0.4, 0, 0.01);
     }
 
     public static final class DrivebaseConstants {
@@ -62,9 +62,12 @@ public final class Constants {
         public static final PIDConstants BOTTOM_PID = new PIDConstants(0, 0, 0);
         public static final FFConstants BOTTOM_FF = new FFConstants(0, 0);
 
+        public static final double SHOOTER_RPM = 5000;
+        public static final double AMP_RPM = 1000;
+        public static final  double FEEDER_SPEED = 1;
 
-        public final static double AMP_POS = 10000;
-        public final static double FEED_POS = 10000;
+        public static final double AMP_POS = 0;
+        public static final double FEED_POS = 0;
     }
 
     public static class IntakeConstants{

@@ -17,9 +17,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AbsoluteDriveAdv;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 
 import java.io.File;
+
+import static frc.robot.Constants.ShooterConstants.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -35,6 +38,7 @@ public class RobotContainer {
             "swerve"));
 
     private final Intake intake = new Intake();
+    private final Shooter shooter = new Shooter();
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -95,6 +99,29 @@ public class RobotContainer {
                 .onFalse(
                         intake.armToTransfer()
                                 .deadlineWith(intake.rollerIn())
+                );
+
+        // Speaker
+        driverXbox.rightTrigger()
+                .whileTrue(
+                    shooter.runShooter(SHOOTER_RPM)
+                            .alongWith(shooter.alignShooter())
+                            .alongwith(drivebase.alignToVision()) // or we define a command that does both with the vision
+                            .andThen(shooter.runFeeder(FEEDER_SPEED)
+                                    .withTimeout(1))
+                            .andThen(shooter.stopShooter())
+                );
+
+        // Amp
+        driverXbox.leftTrigger()
+                .whileTrue(
+                    shooter.armToAmp()
+                            .alongWith(drivebase.alignAmp())
+                            .andThen(
+                                    shooter.runShooter(AMP_RPM)
+                                        .alongWith(shooter.runFeeder(FEEDER_SPEED))
+                                        .withTimeout(1))
+                            .andThen(shooter.stopShooter())
                 );
     }
 
