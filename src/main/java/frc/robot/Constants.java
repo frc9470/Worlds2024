@@ -60,6 +60,9 @@ public final class Constants {
         public static double ARM_G = 0.04;
         public static double ARM_V = 0.095;
         public static double ARM_A = 0.0;
+
+        public final static double TRAP_POS = 10000;
+        public final static double FEED_POS = 10000;
     }
 
     public static class IntakeConstants{

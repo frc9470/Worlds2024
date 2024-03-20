@@ -6,10 +6,14 @@ import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.IntakeConstants.ARM_TOLERANCE;
 import static frc.robot.Constants.ShooterConstants.*;
+
+import java.util.function.Supplier;
 
 public class Shooter extends SubsystemBase {
     private final CANSparkMax arm;
@@ -20,7 +24,6 @@ public class Shooter extends SubsystemBase {
     private final PIDController armPID;
     private final RelativeEncoder armEncoder;
     private final ArmFeedforward armFF;
-//set the tollerance
 
     public Shooter() {
         arm = new CANSparkMax(SHOOTER_ARM, CANSparkLowLevel.MotorType.kBrushless);
@@ -55,8 +58,37 @@ public class Shooter extends SubsystemBase {
         armPID.setSetpoint(pos);
     }
 
+    public double getArmPosRad() {
+        return 2 * Math.PI * armEncoder.getPosition();
+    }
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
+        //move the arm to setpoints every 20 ms
+        arm.set(armPID.calculate(armEncoder.getPosition()) + armFF.calculate(getArmPosRad(), 0));
     }
+
+     /*********************************************************************************
+     ********************************* COMMANDS **************************************
+     *********************************************************************************/
+
+    
+    
+    public Command armToPos(Supplier<Double> rotationSupplier) {
+        return new Command() {
+            @Override
+            public void initialize() {
+                super.initialize();
+                setArmSetpoint(rotationSupplier.get());
+            }
+
+            @Override
+            public boolean isFinished() {
+                return armPID.atSetpoint();
+            }
+        };
+    }
+
+    public Command armToTrap() {return armToPos(()-> TRAP_POS);}
+    public Command armToFeed() {return armToPos(()-> FEED_POS);}
 }
