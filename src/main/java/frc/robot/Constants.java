@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.util.PIDConstants;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import swervelib.math.Matter;
@@ -55,13 +54,16 @@ public final class Constants {
         public static final boolean BOTTOM_INVERTED = false;
         public static final boolean FEEDER_INVERTED = false;
 
-        public static final PIDConstants PID_CONSTANTS = new PIDConstants(1.5, 1, 0.1, 0.05);
-        public static double ARM_KS = 0.05;
-        public static double ARM_G = 0.04;
-        public static double ARM_V = 0.095;
-        public static double ARM_A = 0.0;
+        public static final PIDConstants ARM_PID = new PIDConstants(1.5, 1, 0.1, 0.05);
+        public static final FFConstants ARM_FF = new FFConstants(0.05, 0.04, 0.095, 0.0);
 
-        public final static double TRAP_POS = 10000;
+        public static final PIDConstants TOP_PID = new PIDConstants(0, 0, 0);
+        public static final FFConstants TOP_FF = new FFConstants(0, 0);
+        public static final PIDConstants BOTTOM_PID = new PIDConstants(0, 0, 0);
+        public static final FFConstants BOTTOM_FF = new FFConstants(0, 0);
+
+
+        public final static double AMP_POS = 10000;
         public final static double FEED_POS = 10000;
     }
 
@@ -73,11 +75,8 @@ public final class Constants {
         public static final boolean ARM_INVERTED = false;
         public static final boolean ROLLER_INVERTED = false;
 
-        public static final PIDConstants PID_CONSTANTS = new PIDConstants(1.5, 1, 0.1, 0.05);
-        public static double ARM_KS = 0.05;
-        public static double ARM_G = 0.04;
-        public static double ARM_V = 0.095;
-        public static double ARM_A = 0.0;
+        public static final PIDConstants ARM_PID = new PIDConstants(1.5, 1, 0.1, 0.05);
+        public static final FFConstants ARM_FF = new FFConstants(0.05, 0.04, 0.095, 0.0);
 
         public static final double ROLLER_INTAKE_SPEED = 0.6;
         public static final double ROLLER_OUTTAKE_SPEED = -0.2;
