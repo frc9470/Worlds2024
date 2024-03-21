@@ -13,7 +13,7 @@ public class Intake extends VerticalArm {
     private final CANSparkMax roller;
 
     public Intake() {
-        super(new CANSparkMax(INTAKE_ARM, CANSparkLowLevel.MotorType.kBrushless), ARM_PID, ARM_FF);
+        super(new CANSparkMax(INTAKE_ARM, CANSparkLowLevel.MotorType.kBrushless), ARM_PID, ARM_FF, 0);
         roller = new CANSparkMax(INTAKE_ROLLER, CANSparkLowLevel.MotorType.kBrushless);
 
         roller.restoreFactoryDefaults();

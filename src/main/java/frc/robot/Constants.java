@@ -57,10 +57,10 @@ public final class Constants {
         public static final PIDConstants ARM_PID = new PIDConstants(1.5, 1, 0.1, 0.05);
         public static final FFConstants ARM_FF = new FFConstants(0.05, 0.04, 0.095, 0.0);
 
-        public static final PIDConstants TOP_PID = new PIDConstants(0, 0, 0);
-        public static final FFConstants TOP_FF = new FFConstants(0, 0);
-        public static final PIDConstants BOTTOM_PID = new PIDConstants(0, 0, 0);
-        public static final FFConstants BOTTOM_FF = new FFConstants(0, 0);
+        public static final PIDConstants TOP_PID = new PIDConstants(0.0, 0.0, 0.0);
+        public static final FFConstants TOP_FF = new FFConstants(0.0, 0.0);
+        public static final PIDConstants BOTTOM_PID = new PIDConstants(0.0, 0.0, 0.0);
+        public static final FFConstants BOTTOM_FF = new FFConstants(0.0, 0.0);
 
         public static final double SHOOTER_RPM = 5000;
         public static final double AMP_RPM = 1000;

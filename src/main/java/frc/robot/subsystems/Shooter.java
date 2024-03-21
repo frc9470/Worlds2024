@@ -20,7 +20,7 @@ public class Shooter extends VerticalArm {
 
 
     public Shooter() {
-        super(new CANSparkMax(SHOOTER_ARM, CANSparkLowLevel.MotorType.kBrushless), ARM_PID, ARM_FF);
+        super(new CANSparkMax(SHOOTER_ARM, CANSparkLowLevel.MotorType.kBrushless), ARM_PID, ARM_FF, 1);
         top = new CANSparkMax(SHOOTER_TOP, CANSparkLowLevel.MotorType.kBrushless);
         bottom = new CANSparkMax(SHOOTER_BOTTOM, CANSparkLowLevel.MotorType.kBrushless);
         feeder = new CANSparkMax(SHOOTER_FEED, CANSparkLowLevel.MotorType.kBrushless);

@@ -11,7 +11,8 @@ public record PIDConstants (double kP, double kI, double kD, double iZone, doubl
     }
 
     public PIDController getController() {
-        PIDController controller = new PIDController(kP, kI, kD, iZone);
+        PIDController controller = new PIDController(kP, kI, kD);
+        controller.setIZone(iZone);
         controller.setTolerance(kTolerance);
         return controller;
     }

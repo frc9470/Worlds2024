@@ -20,7 +20,7 @@ public abstract class VerticalArm extends SubsystemBase {
     protected final PIDController armPID;
     protected final ArmFeedforward armFF;
 
-    public VerticalArm(CANSparkMax arm, PIDConstants pidConstants, FFConstants armFF) {
+    public VerticalArm(CANSparkMax arm, PIDConstants pidConstants, FFConstants armFF, int encoderPort) {
         this.arm = arm;
         arm.restoreFactoryDefaults();
         arm.setIdleMode(CANSparkMax.IdleMode.kBrake);
@@ -30,7 +30,7 @@ public abstract class VerticalArm extends SubsystemBase {
         this.armPID = pidConstants.getController();
         this.armFF = armFF.getArmFF();
 
-        throughBore = new DutyCycleEncoder(0);
+        throughBore = new DutyCycleEncoder(encoderPort);
         armEncoder = arm.getEncoder();
     }
 
