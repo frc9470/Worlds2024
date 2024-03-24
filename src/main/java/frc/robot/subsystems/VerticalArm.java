@@ -19,11 +19,12 @@ public abstract class VerticalArm extends SubsystemBase {
     protected final RelativeEncoder armEncoder;
     protected final PIDController armPID;
     protected final ArmFeedforward armFF;
+    private double offset;
 
-    public VerticalArm(CANSparkMax arm, PIDConstants pidConstants, FFConstants armFF, int encoderPort) {
+    public VerticalArm(CANSparkMax arm, PIDConstants pidConstants, FFConstants armFF, int encoderPort, double ratio, double offset) {
         this.arm = arm;
         arm.restoreFactoryDefaults();
-        arm.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        arm.setIdleMode(CANSparkMax.IdleMode.kCoast);
         arm.setInverted(false);
         arm.setSmartCurrentLimit(40);
 
@@ -32,15 +33,23 @@ public abstract class VerticalArm extends SubsystemBase {
 
         throughBore = new DutyCycleEncoder(encoderPort);
         armEncoder = arm.getEncoder();
+        armEncoder.setPositionConversionFactor(ratio);
+
+        this.offset = offset;
+        resetEncoder();
+
+        setArmSetpoint(throughBore.getAbsolutePosition()+offset);
     }
 
     public void resetEncoder() {
-        armEncoder.setPosition(throughBore.getAbsolutePosition());
+        armEncoder.setPosition(throughBore.getAbsolutePosition()+offset);
     }
 
     public void setArmSetpoint(double pos) {
         armPID.setSetpoint(pos);
     }
+
+
 
     public double getArmPosRad() {
         return 2 * Math.PI * armEncoder.getPosition();
@@ -55,10 +64,12 @@ public abstract class VerticalArm extends SubsystemBase {
         //move the arm to the setpoint every 20 ms
         double output = armPID.calculate(armEncoder.getPosition()) + armFF.calculate(getArmPosRad(), 0);
         arm.set(output);
-        SmartDashboard.putNumber("Error", getArmPos() - armPID.getSetpoint());
-        SmartDashboard.putNumber("Rotations", armPID.getSetpoint());
-        SmartDashboard.putNumber("Output", output);
-        SmartDashboard.putNumber("Count", SmartDashboard.getNumber("Count", 0) + 1);
+        SmartDashboard.putNumber(this.getName() + " Error", getArmPos() - armPID.getSetpoint());
+        SmartDashboard.putNumber(this.getName() + " Rotations", armPID.getSetpoint());
+        SmartDashboard.putNumber(this.getName() + " Arm Output", output);
+        SmartDashboard.putNumber(this.getName() + " Count", SmartDashboard.getNumber("Count", 0) + 1);
+        SmartDashboard.putNumber(this.getName() + " Absolute Encoder Position", throughBore.getAbsolutePosition());
+        SmartDashboard.putData(this.getName() + " PID", armPID);
     }
 
     /*********************************************************************************
