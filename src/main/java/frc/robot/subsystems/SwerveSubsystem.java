@@ -10,6 +10,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.ReplanningConfig;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -20,9 +21,11 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.AutonConstants;
+import frc.robot.util.LimelightHelpers;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
@@ -34,6 +37,8 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 import java.io.File;
 import java.util.function.DoubleSupplier;
+
+import static frc.robot.Constants.AutonConstants.ANGLE_PID_L;
 
 public class SwerveSubsystem extends SubsystemBase {
 
@@ -442,10 +447,58 @@ public class SwerveSubsystem extends SubsystemBase {
         return swerveDrive.getPitch();
     }
 
-    /**
-     * Add a fake vision reading for testing purposes.
-     */
-    public void addFakeVisionReading() {
-        swerveDrive.addVisionMeasurement(new Pose2d(3, 3, Rotation2d.fromDegrees(65)), Timer.getFPGATimestamp());
+    public void updatePoseEstimatorWithVisionBotPose() {
+        LimelightHelpers.PoseEstimate visionBotPose = LimelightHelpers.getBotPoseEstimate_wpiBlue("");
+        // invalid LL data
+        if (visionBotPose.pose.getX() == 0.0) {
+            return;
+        }
+
+        // distance from current pose to vision estimated pose
+        double poseDifference = getPose().getTranslation()
+                .getDistance(visionBotPose.pose.getTranslation());
+
+        if (visionBotPose.tagCount > 0) {
+            double xyStds;
+            double degStds;
+            // multiple targets detected
+            if (visionBotPose.tagCount >= 2) {
+                xyStds = 0.5;
+                degStds = 6;
+            }
+            // 1 target with large area and close to estimated pose
+            else if (visionBotPose.avgTagArea > 0.8 && poseDifference < 0.5) {
+                xyStds = 1.0;
+                degStds = 12;
+            }
+            // 1 target farther away and estimated pose is close
+            else if (visionBotPose.avgTagArea > 0.1 && poseDifference < 0.3) {
+                xyStds = 2.0;
+                degStds = 30;
+            }
+            // conditions don't match to add a vision measurement
+            else {
+                return;
+            }
+
+            swerveDrive.addVisionMeasurement(visionBotPose.pose,
+                    Timer.getFPGATimestamp() - visionBotPose.latency/1000.0,
+                    VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
+        }
+    }
+
+    public Command alignToVision() {
+        return new PIDCommand(
+                ANGLE_PID_L.getController(),
+                () -> Math.toRadians(LimelightHelpers.getTX("")),
+                () -> 0.0,
+                (double output) -> drive(new Translation2d(0, 0), output, false),
+                this
+        ){
+            @Override
+            public boolean isFinished() {
+                return Math.abs(getController().getSetpoint() - m_measurement.getAsDouble()) < ANGLE_PID_L.getTolerance();
+            }
+        };
     }
 }

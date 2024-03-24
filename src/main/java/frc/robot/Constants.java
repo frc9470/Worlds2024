@@ -6,6 +6,8 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.util.FFConstants;
+import frc.robot.util.PIDConstants;
 import swervelib.math.Matter;
 
 /**
@@ -26,12 +28,20 @@ public final class Constants {
 
         public static final com.pathplanner.lib.util.PIDConstants TRANSLATION_PID = new com.pathplanner.lib.util.PIDConstants(0.7, 0, 0);
         public static final com.pathplanner.lib.util.PIDConstants ANGLE_PID = new com.pathplanner.lib.util.PIDConstants(0.4, 0, 0.01);
+        public static final PIDConstants ANGLE_PID_L = new PIDConstants(0.4, 0, 0.01, 0, 0.01);
     }
 
     public static final class DrivebaseConstants {
 
         // Hold time on motor brakes when disabled
         public static final double WHEEL_LOCK_TIME = 10; // seconds
+    }
+
+    public static final class LimelightConstants {
+        public static final double LIMELIGHT_HEIGHT = 0.5; // meters
+        public static final double LIMELIGHT_ANGLE = 0; // degrees
+        public static final double TARGET_HEIGHT = 2.495; // meters
+        public static final double TARGET_HEIGHT_DIFFERENCE = TARGET_HEIGHT - LIMELIGHT_HEIGHT;
     }
 
     public static class OperatorConstants {
@@ -49,13 +59,13 @@ public final class Constants {
         public static final int SHOOTER_BOTTOM = 18;
         public static final int SHOOTER_FEED = 19;
 
-        public static final boolean ARM_INVERTED = false;
+        public static final boolean ARM_INVERTED = true;
         public static final boolean TOP_INVERTED = false;
         public static final boolean BOTTOM_INVERTED = false;
         public static final boolean FEEDER_INVERTED = false;
 
-        public static final PIDConstants ARM_PID = new PIDConstants(1.5, 1, 0.1, 0.05, 0.05);
-        public static final FFConstants ARM_FF = new FFConstants(0.05, 0.04, 0.095, 0.0);
+        public static final PIDConstants ARM_PID = new PIDConstants(0.0, 0.0, 0.0, 0.1, 0.01);
+        public static final FFConstants ARM_FF = new FFConstants(0.0, 0.04, 0.0, 0.0);
 
         public static final PIDConstants TOP_PID = new PIDConstants(0.0, 0.0, 0.0);
         public static final FFConstants TOP_FF = new FFConstants(0.0, 0.0);
@@ -66,8 +76,10 @@ public final class Constants {
         public static final double AMP_RPM = 1000;
         public static final  double FEEDER_SPEED = 1;
 
-        public static final double AMP_POS = 0;
-        public static final double FEED_POS = 0;
+        public static final double ARM_ABSOLUTE_OFFSET = -0.23;
+
+        public static final double AMP_POS = 0.3;
+        public static final double FEED_POS = 0.1;
     }
 
     public static class IntakeConstants{

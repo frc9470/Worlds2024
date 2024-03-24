@@ -13,12 +13,11 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.AbsoluteDriveAdv;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 import java.io.File;
 
@@ -37,8 +36,9 @@ public class RobotContainer {
     private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
             "swerve"));
 
-    private final Intake intake = new Intake();
-    private final Shooter shooter = new Shooter();
+    private final IntakeSubsystem intake = new IntakeSubsystem();
+    private final ShooterSubsystem shooter = new ShooterSubsystem();
+    private VisionSubsystem vision = new VisionSubsystem();
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -83,7 +83,6 @@ public class RobotContainer {
         // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
         driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-        driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
         driverXbox.b().whileTrue(
                 Commands.deferredProxy(() -> drivebase.driveToPose(
                         new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0)))
@@ -101,29 +100,28 @@ public class RobotContainer {
                                 .deadlineWith(intake.rollerIn())
                 );
 
-//        // Speaker
-//        driverXbox.rightTrigger()
-//                .whileTrue(
-//                    shooter.runShooter(SHOOTER_RPM)
-//                            .alongWith(shooter.alignShooter())
-//                            .alongwith(drivebase.alignToVision()) // or we define a command that does both with the vision
-//                            .andThen(shooter.runFeeder(FEEDER_SPEED)
-//                                    .withTimeout(1))
-//                            .andThen(shooter.stopShooter())
-//                );
-//
-//        // Amp
-//        driverXbox.leftTrigger()
-//                .whileTrue(
-//                    shooter.armToAmp()
-//                            .alongWith(drivebase.alignAmp())
-//                            .andThen(
-//                                    shooter.runShooter(AMP_RPM)
-//                                        .alongWith(shooter.runFeeder(FEEDER_SPEED))
-//                                        .withTimeout(1))
-//                            .andThen(shooter.stopShooter())
-//                );
-    }
+                // Speaker
+        driverXbox.rightTrigger()
+                .whileTrue(
+                    shooter.runShooter(SHOOTER_RPM)
+                            .alongWith(shooter.alignShooter(vision))
+                            .alongWith(drivebase.alignToVision()) // or we define a command that does both with the vision
+                            .andThen(shooter.runFeeder(FEEDER_SPEED)
+                                    .withTimeout(1))
+                            .andThen(shooter.stopShooter())
+                );
+
+        // Amp
+        driverXbox.leftTrigger()
+                .whileTrue(
+                    shooter.armToAmp()
+                            //.alongWith(drivebase.alignAmp())
+                            .andThen(
+                                    shooter.runShooter(AMP_RPM)
+                                        .alongWith(shooter.runFeeder(FEEDER_SPEED))
+                                        .withTimeout(1))
+                            .andThen(shooter.stopShooter())
+                );
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
