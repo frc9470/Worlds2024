@@ -100,28 +100,41 @@ public class RobotContainer {
                                 .deadlineWith(intake.rollerIn())
                 );
 
-                // Speaker
+        driverXbox.rightBumper()
+                        .whileTrue(
+                                intake.armToTransfer()
+                                        .andThen(
+                                            intake.rollerOut()
+                                            .alongWith(shooter.getFeederCommand())
+                                        )
+
+                        );
+
+        // Speaker
         driverXbox.rightTrigger()
                 .whileTrue(
-                    shooter.runShooter(SHOOTER_RPM)
-                            .alongWith(shooter.alignShooter(vision))
-                            .alongWith(drivebase.alignToVision()) // or we define a command that does both with the vision
-                            .andThen(shooter.runFeeder(FEEDER_SPEED)
-                                    .withTimeout(1))
-                            .andThen(shooter.stopShooter())
+                        shooter.runShooter(SHOOTER_RPM)
+                                .alongWith(shooter.alignShooter(vision))
+                                .alongWith(drivebase.alignToVision()) // or we define a command that does both with the vision
+                                .andThen(shooter.runFeeder(FEEDER_SPEED)
+                                        .withTimeout(1))
+                                .andThen(shooter.stopShooter())
                 );
 
         // Amp
         driverXbox.leftTrigger()
                 .whileTrue(
-                    shooter.armToAmp()
-                            //.alongWith(drivebase.alignAmp())
-                            .andThen(
-                                    shooter.runShooter(AMP_RPM)
-                                        .alongWith(shooter.runFeeder(FEEDER_SPEED))
-                                        .withTimeout(1))
-                            .andThen(shooter.stopShooter())
+                        shooter.armToAmp()
+                                //.alongWith(drivebase.alignAmp())
+                                .andThen(
+                                        shooter.runShooter(AMP_RPM)
+                                                .alongWith(shooter.runFeeder(FEEDER_SPEED))
+                                                .withTimeout(1))
+                                .andThen(shooter.stopShooter())
                 );
+
+
+    }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.

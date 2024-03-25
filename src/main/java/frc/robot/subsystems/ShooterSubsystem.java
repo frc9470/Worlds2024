@@ -104,6 +104,10 @@ public class ShooterSubsystem extends VerticalArm {
         };
     }
 
+    public Command getFeederCommand() {
+        return runFeeder(FEEDER_SPEED);
+    }
+
     public Command runShooter(double speed) {
         return new Command() {
             @Override
@@ -118,6 +122,7 @@ public class ShooterSubsystem extends VerticalArm {
             }
         };
     }
+
 
     public Command stopShooter() {
         return runShooter(0);
