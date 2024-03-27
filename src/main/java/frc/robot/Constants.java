@@ -20,7 +20,7 @@ import swervelib.math.Matter;
  */
 public final class Constants {
 
-    public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
+    public static final double ROBOT_MASS = (90) * 0.453592; // 32lbs * kg per pound
     public static final Matter CHASSIS = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
     public static final double LOOP_TIME = 0.13; //s, 20ms + 110ms sprk max velocity lag
 
@@ -55,22 +55,22 @@ public final class Constants {
 
     public static class ShooterConstants{
         public static final int SHOOTER_ARM = 16;
-        public static final int SHOOTER_TOP = 17;
-        public static final int SHOOTER_BOTTOM = 18;
+        public static final int SHOOTER_TOP = 18;
+        public static final int SHOOTER_BOTTOM = 17;
         public static final int SHOOTER_FEED = 19;
 
         public static final boolean ARM_INVERTED = true;
-        public static final boolean TOP_INVERTED = false;
-        public static final boolean BOTTOM_INVERTED = false;
+        public static final boolean TOP_INVERTED = true;
+        public static final boolean BOTTOM_INVERTED = true;
         public static final boolean FEEDER_INVERTED = false;
 
         public static final PIDConstants ARM_PID = new PIDConstants(0.0, 0.0, 0.0, 0.1, 0.01);
         public static final FFConstants ARM_FF = new FFConstants(0.0, 0.04, 0.0, 0.0);
 
         public static final PIDConstants TOP_PID = new PIDConstants(0.0, 0.0, 0.0);
-        public static final FFConstants TOP_FF = new FFConstants(0.0, 0.0);
+        public static final FFConstants TOP_FF = new FFConstants(0.13, 0.001046622264);
         public static final PIDConstants BOTTOM_PID = new PIDConstants(0.0, 0.0, 0.0);
-        public static final FFConstants BOTTOM_FF = new FFConstants(0.0, 0.0);
+        public static final FFConstants BOTTOM_FF = new FFConstants(0.13, 0.00107003891);
 
         public static final double SHOOTER_RPM = 5000;
         public static final double AMP_RPM = 1000;

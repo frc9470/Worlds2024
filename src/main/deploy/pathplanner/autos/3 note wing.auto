@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 0.6818739771842957,
+      "y": 4.426502227783203
+    },
+    "rotation": -63.4349564003161
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -8,12 +14,12 @@
         {
           "type": "path",
           "data": {
-            "pathName": "6note"
+            "pathName": "3 Note Wing"
           }
         }
       ]
     }
   },
   "folder": null,
-  "choreoAuto": false
+  "choreoAuto": true
 }

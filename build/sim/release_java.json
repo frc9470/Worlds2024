@@ -1,0 +1,21 @@
+[
+  {
+    "type": "java",
+    "name": "jar (in project Worlds2024)",
+    "extensions": [
+      {
+        "name": "Sim GUI",
+        "libName": "/Users/tycho/Projects/Worlds2024/build/jni/release/libhalsim_gui.dylib",
+        "defaultEnabled": true
+      },
+      {
+        "name": "Use Real DriverStation",
+        "libName": "/Users/tycho/Projects/Worlds2024/build/jni/release/libhalsim_ds_socket.dylib",
+        "defaultEnabled": false
+      }
+    ],
+    "environment": {},
+    "libraryDir": "/Users/tycho/Projects/Worlds2024/build/jni/release",
+    "mainClassName": "frc.robot.Main"
+  }
+]

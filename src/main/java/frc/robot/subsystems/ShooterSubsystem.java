@@ -4,6 +4,8 @@ import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import static frc.robot.Constants.ShooterConstants.*;
@@ -33,6 +35,9 @@ public class ShooterSubsystem extends VerticalArm {
         bottom.setInverted(BOTTOM_INVERTED);
         feeder.setInverted(FEEDER_INVERTED);
 
+        top.getEncoder().setVelocityConversionFactor(2.0);
+        bottom.getEncoder().setVelocityConversionFactor(2.0);
+
         topPID = TOP_PID.getController();
         bottomPID = BOTTOM_PID.getController();
         topFF = TOP_FF.getSimpleFF();
@@ -44,6 +49,14 @@ public class ShooterSubsystem extends VerticalArm {
     public void periodic() {
         super.periodic();
         setShooterControl(flywheelSetpoint);
+
+        // Telemetry
+        SmartDashboard.putNumber("Shooter Top RPM", getTopVelocityRPM());
+        SmartDashboard.putNumber("Shooter Bottom RPM", getBottomVelocityRPM());
+        SmartDashboard.putNumber("Shooter Top Setpoint", top.getAppliedOutput());
+        SmartDashboard.putNumber("Shooter Bottom Setpoint", bottom.getAppliedOutput());
+        SmartDashboard.putData("Shooter TopPID", topPID);
+        SmartDashboard.putData("Shooter BottomPID", bottomPID);
     }
 
     public double getTopVelocityRPM() {
@@ -117,6 +130,11 @@ public class ShooterSubsystem extends VerticalArm {
             }
 
             @Override
+            public void end(boolean interrupted) {
+                setShooter(0);
+            }
+
+            @Override
             public boolean isFinished() {
                 return Math.abs(getTopVelocityRPM() - speed) < 100;
             }
@@ -142,5 +160,22 @@ public class ShooterSubsystem extends VerticalArm {
 
     private double angleFromDistance(double distance) {
         return 0.0;
+    }
+
+    public Command scoreAmp(){
+        return this.armToAmp()
+                //.alongWith(drivebase.alignAmp())
+                .andThen(
+                        this.runShooter(AMP_RPM)
+                                .alongWith(this.runFeeder(FEEDER_SPEED))
+                                .withTimeout(1))
+                .andThen(this.stopShooter());
+    }
+
+    public Command scoreShooter(){
+        return this.runShooter(SHOOTER_RPM)
+                .andThen(this.runFeeder(FEEDER_SPEED)
+                        .withTimeout(1))
+                .andThen(this.stopShooter());
     }
 }

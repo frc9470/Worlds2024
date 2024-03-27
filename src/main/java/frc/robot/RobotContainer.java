@@ -4,12 +4,16 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -40,10 +44,14 @@ public class RobotContainer {
     private final ShooterSubsystem shooter = new ShooterSubsystem();
     private VisionSubsystem vision = new VisionSubsystem();
 
+    private SendableChooser<Command> autoChooser;
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+        configAuto();
+
         // Configure the trigger bindings
         configureBindings();
 //        AbsoluteDriveAdv closedAbsoluteDriveAdv = new AbsoluteDriveAdv(drivebase,
@@ -77,6 +85,17 @@ public class RobotContainer {
 
         drivebase.setDefaultCommand(
                 !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
+    }
+
+    private void configAuto() {
+        // Register names for the auto commands
+        NamedCommands.registerCommand("shoot", shooter.scoreShooter());
+        NamedCommands.registerCommand("amp", shooter.scoreAmp());
+        NamedCommands.registerCommand("intakedown", intake.intakeDown());
+        NamedCommands.registerCommand("intakeup", intake.intakeUp());
+
+        autoChooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("Auto Mode", autoChooser);
     }
 
     private void configureBindings() {
@@ -133,6 +152,10 @@ public class RobotContainer {
                                 .andThen(shooter.stopShooter())
                 );
 
+        driverXbox.y().whileTrue(
+                shooter.runShooter(10000)
+                        .alongWith(shooter.getFeederCommand())
+        );
 
     }
 
@@ -143,7 +166,7 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
-        return drivebase.getAutonomousCommand("mogged6962");
+        return autoChooser.getSelected();
     }
 
     public void setDriveMode() {

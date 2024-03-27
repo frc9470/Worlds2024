@@ -36,4 +36,12 @@ public class IntakeSubsystem extends VerticalArm {
 
     public Command rollerIn() {return setIntake(ROLLER_INTAKE_SPEED);}
     public Command rollerOut() {return setIntake(ROLLER_OUTTAKE_SPEED);}
+
+    public Command intakeDown() {
+        return armToGround().andThen(setIntake(ROLLER_INTAKE_SPEED));
+    }
+
+    public Command intakeUp() {
+        return setIntake(0).andThen(armToTransfer());
+    }
 }
