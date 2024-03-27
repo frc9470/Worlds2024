@@ -24,7 +24,7 @@ public abstract class VerticalArm extends SubsystemBase {
     public VerticalArm(CANSparkMax arm, boolean inverted, PIDConstants pidConstants, FFConstants armFF, int encoderPort, double ratio, double offset) {
         this.arm = arm;
         arm.restoreFactoryDefaults();
-        arm.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        arm.setIdleMode(CANSparkMax.IdleMode.kCoast);
         arm.setInverted(inverted);
         arm.setSmartCurrentLimit(40);
 
@@ -60,8 +60,8 @@ public abstract class VerticalArm extends SubsystemBase {
     @Override
     public void periodic() {
         //move the arm to the setpoint every 20 ms
-//        double output = armPID.calculate(getArmPos()) + armFF.calculate(getArmPosRad(), 0);
-//        arm.set(output);
+       double output = armPID.calculate(getArmPos()) + armFF.calculate(getArmPosRad(), 0);
+       arm.set(output);
         SmartDashboard.putNumber(this.getName() + " Position", getArmPos());
         SmartDashboard.putNumber(this.getName() + " Error", getArmPos() - armPID.getSetpoint());
         SmartDashboard.putNumber(this.getName() + " Rotations", armPID.getSetpoint());
