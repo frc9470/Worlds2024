@@ -24,7 +24,7 @@ public abstract class VerticalArm extends SubsystemBase {
     public VerticalArm(CANSparkMax arm, boolean inverted, PIDConstants pidConstants, FFConstants armFF, int encoderPort, double ratio, double offset) {
         this.arm = arm;
         arm.restoreFactoryDefaults();
-        arm.setIdleMode(CANSparkMax.IdleMode.kCoast);
+        arm.setIdleMode(CANSparkMax.IdleMode.kBrake);
         arm.setInverted(inverted);
         arm.setSmartCurrentLimit(40);
 
