@@ -98,7 +98,7 @@ public final class Constants {
         public static final double ROLLER_OUTTAKE_SPEED = -0.2;
         public static final double ARM_GROUND_POSITION = -0.05;
         // public static final double ARM_INTAKE_POSITION = 0.5;
-        public static final double ARM_STOW_POSITION = 0.30;
+        public static final double ARM_STOW_POSITION = 0.25;
         public static final double ARM_TOLERANCE = 0.05;
         public static final double ARM_ABSOLUTE_OFFSET = -0.5971078;
 

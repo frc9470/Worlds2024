@@ -174,8 +174,8 @@ public class ShooterSubsystem extends VerticalArm {
 
     public Command scoreShooter(){
         return this.runShooter(SHOOTER_RPM)
-                .andThen(this.runFeeder(FEEDER_SPEED)
-                        .withTimeout(1))
+                .andThen(this.runFeeder(FEEDER_SPEED))
+                .withTimeout(1)
                 .andThen(this.stopShooter());
     }
 }
