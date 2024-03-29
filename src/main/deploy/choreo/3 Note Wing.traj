@@ -642,16 +642,7 @@
   ],
   "eventMarkers": [
     {
-      "timestamp": 2.936411896379905,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "shoot"
-        }
-      }
-    },
-    {
-      "timestamp": 1.5028566027423849,
+      "timestamp": 1.9028566027423848,
       "command": {
         "type": "named",
         "data": {
@@ -664,12 +655,12 @@
       "command": {
         "type": "named",
         "data": {
-          "name": "intake"
+          "name": "feed"
         }
       }
     },
     {
-      "timestamp": 2.936411896379905,
+      "timestamp": 3.5750137543647065,
       "command": {
         "type": "named",
         "data": {
@@ -682,16 +673,7 @@
       "command": {
         "type": "named",
         "data": {
-          "name": "intakeup"
-        }
-      }
-    },
-    {
-      "timestamp": 4.645304871005673,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "shoot"
+          "name": "feed"
         }
       }
     }

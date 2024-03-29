@@ -32,7 +32,18 @@
         {
           "type": "named",
           "data": {
+<<<<<<< Updated upstream
             "name": "shoot"
+=======
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              }
+            ]
+>>>>>>> Stashed changes
           }
         },
         {
@@ -44,7 +55,24 @@
         {
           "type": "named",
           "data": {
+<<<<<<< Updated upstream
             "name": "shoot"
+=======
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shoot"
+                }
+              }
+            ]
+>>>>>>> Stashed changes
           }
         }
       ]
