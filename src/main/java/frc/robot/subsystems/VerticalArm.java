@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -24,7 +25,7 @@ public abstract class VerticalArm extends SubsystemBase {
     public VerticalArm(CANSparkMax arm, boolean inverted, PIDConstants pidConstants, FFConstants armFF, int encoderPort, double ratio, double offset) {
         this.arm = arm;
         arm.restoreFactoryDefaults();
-        arm.setIdleMode(CANSparkMax.IdleMode.kCoast);
+        arm.setIdleMode(CANSparkMax.IdleMode.kBrake);
         arm.setInverted(inverted);
         arm.setSmartCurrentLimit(40);
 
@@ -38,7 +39,7 @@ public abstract class VerticalArm extends SubsystemBase {
         this.offset = offset;
         resetEncoder();
 
-        setArmSetpoint(armEncoder.getPosition());
+        setArmSetpoint(armEncoder.getPosition() * ratio);
     }
 
     public void resetEncoder() {
@@ -46,6 +47,8 @@ public abstract class VerticalArm extends SubsystemBase {
     }
 
     public void setArmSetpoint(double pos) {
+        if (pos > 1 || pos < -1) throw new IllegalArgumentException("Error: Arm Setpoint " + pos + " for " + this.getName() + " outside safety bounds.");
+        pos = MathUtil.clamp(pos, -0.2, 0.5);
         armPID.setSetpoint(pos);
     }
 
@@ -60,12 +63,18 @@ public abstract class VerticalArm extends SubsystemBase {
     @Override
     public void periodic() {
         //move the arm to the setpoint every 20 ms
-       double output = armPID.calculate(getArmPos()) + armFF.calculate(getArmPosRad(), 0);
-       arm.set(output);
+        // check setpoint and clamp it to -0.2, 0.5
+        double setpoint = armPID.getSetpoint();
+        setpoint = MathUtil.clamp(setpoint, -0.2, 0.5);
+        if (setpoint != armPID.getSetpoint()) System.out.println("Warning: Illegal arm setpoint clamped. " + armPID.getSetpoint());
+        setArmSetpoint(setpoint);
+
+        double output = armPID.calculate(getArmPos()) + armFF.calculate(getArmPosRad(), 0);
+        arm.set(output);
         SmartDashboard.putNumber(this.getName() + " Position", getArmPos());
         SmartDashboard.putNumber(this.getName() + " Error", getArmPos() - armPID.getSetpoint());
         SmartDashboard.putNumber(this.getName() + " Rotations", armPID.getSetpoint());
-//        SmartDashboard.putNumber(this.getName() + " Arm Output", output);
+        SmartDashboard.putNumber(this.getName() + " Arm Output", output);
         SmartDashboard.putNumber(this.getName() + " Count", SmartDashboard.getNumber("Count", 0) + 1);
         SmartDashboard.putNumber(this.getName() + " Absolute Encoder Position", throughBore.getAbsolutePosition());
         SmartDashboard.putData(this.getName() + " PID", armPID);

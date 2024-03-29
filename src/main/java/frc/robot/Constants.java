@@ -64,7 +64,7 @@ public final class Constants {
         public static final boolean BOTTOM_INVERTED = true;
         public static final boolean FEEDER_INVERTED = false;
 
-        public static final PIDConstants ARM_PID = new PIDConstants(0.0, 0.0, 0.0, 0.1, 0.01);
+        public static final PIDConstants ARM_PID = new PIDConstants(4.0, 10.0, 1.0, 0.1, 0.01);
         public static final FFConstants ARM_FF = new FFConstants(0.0, 0.04, 0.0, 0.0);
 
         public static final PIDConstants TOP_PID = new PIDConstants(0.0, 0.0, 0.0);
@@ -97,7 +97,7 @@ public final class Constants {
         public static final double ROLLER_OUTTAKE_SPEED = -0.2;
         public static final double ARM_GROUND_POSITION = -0.05;
         // public static final double ARM_INTAKE_POSITION = 0.5;
-        public static final double ARM_STOW_POSITION = 0.30;
+        public static final double ARM_STOW_POSITION = 0.25;
         public static final double ARM_TOLERANCE = 0.05;
         public static final double ARM_ABSOLUTE_OFFSET = -0.5971078;
     }
