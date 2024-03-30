@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AbsoluteDriveAdv;
@@ -112,32 +113,42 @@ public class RobotContainer {
                                 .andThen(intake.rollerIn())
                 )
                 .onFalse(
-                        intake.armToTransfer()
+                        intake.armToStow()
                                 .deadlineWith(intake.rollerIn())
                 );
 
         driverXbox.rightBumper()
                         .whileTrue(
-                                intake.armToTransfer()
+                                shooter.armToFeed()
+                                .alongWith(
+                                        new WaitCommand(1).andThen(intake.armToTransfer())
+                                )
                                         .andThen(
                                             intake.rollerOut()
                                             .alongWith(shooter.getFeederCommand())
                                         )
 
+                        )
+                        .onFalse(
+                                intake.armToStow()
+                                        .alongWith(
+                                                new WaitCommand(1).andThen(shooter.armToStow())
+                                        )
+
                         );
 
         // Speaker
-//        driverXbox.rightTrigger()
-//                .whileTrue(
-//                        shooter.runShooter(SHOOTER_RPM)
-//                                .alongWith(shooter.alignShooter(vision))
-//                                .alongWith(drivebase.alignToVision()) // or we define a command that does both with the vision
-//                                .andThen(shooter.runFeeder(FEEDER_SPEED)
-//                                        .withTimeout(1))
-//                                .andThen(shooter.stopShooter())
-//                );
         driverXbox.rightTrigger()
-                        .whileTrue(intake.rollerOut());
+                .whileTrue(
+                        shooter.runShooter(SHOOTER_RPM)
+                                .alongWith(shooter.alignShooter(vision))
+                                .alongWith(drivebase.alignToVision()) // or we define a command that does both with the vision
+                                .andThen(shooter.runFeeder(FEEDER_SPEED))
+                )
+                .onFalse(
+                        shooter.armToStow()
+                        .alongWith(shooter.stopShooter())
+                );
 
         // Amp
         driverXbox.leftTrigger()
@@ -147,7 +158,10 @@ public class RobotContainer {
                                 .andThen(
                                         shooter.runShooter(AMP_RPM)
                                                 .alongWith(shooter.runFeeder(FEEDER_SPEED)))
-                ).onFalse(shooter.stopShooter());
+                ).onFalse(
+                        shooter.armToStow()
+                        .alongWith(shooter.stopShooter())
+                );
 
         driverXbox.y().whileTrue(
                 shooter.runShooter(10000)

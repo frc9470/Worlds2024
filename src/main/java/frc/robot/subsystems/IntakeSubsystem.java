@@ -26,8 +26,11 @@ public class IntakeSubsystem extends VerticalArm {
         return armToPos(() -> ARM_GROUND_POSITION);
     }
 
-    public Command armToTransfer() {
+    public Command armToStow() {
         return armToPos(() -> ARM_STOW_POSITION);
+    }
+    public Command armToTransfer() {
+        return armToPos(() -> ARM_TRANSFER_POSITION);
     }
 
     public Command setIntake(double speed) {
@@ -42,6 +45,6 @@ public class IntakeSubsystem extends VerticalArm {
     }
 
     public Command intakeUp() {
-        return setIntake(0).andThen(armToTransfer());
+        return setIntake(0).andThen(armToStow());
     }
 }
