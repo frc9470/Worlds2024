@@ -29,3 +29,5 @@ replay_pid*
 /.wpilib
 /.vscode
 /.idea
+
+/build
