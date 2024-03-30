@@ -8,6 +8,7 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
+import static frc.robot.Constants.LimelightConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
 public class ShooterSubsystem extends VerticalArm {
@@ -160,7 +161,9 @@ public class ShooterSubsystem extends VerticalArm {
     }
 
     private double angleFromDistance(double distance) {
-        return 0.0;
+        //assuming shooting in a straight line lol
+        double error = 0.0; // speed decreases quadratically do smthing with that tycho
+        return Math.atan((SPEAKER_HEIGHT - LIMELIGHT_HEIGHT)/distance) + error;
     }
 
     public Command scoreAmp(){

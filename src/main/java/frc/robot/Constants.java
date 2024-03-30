@@ -41,6 +41,8 @@ public final class Constants {
         public static final double LIMELIGHT_HEIGHT = 0.47; // meters
         public static final double LIMELIGHT_ANGLE = 16; // degrees
         public static final double TARGET_HEIGHT = 1.37; // meters
+
+        public static final double SPEAKER_HEIGHT = 1.98; //meters
         public static final double TARGET_HEIGHT_DIFFERENCE = TARGET_HEIGHT - LIMELIGHT_HEIGHT;
     }
 
