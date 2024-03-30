@@ -25,3 +25,7 @@ replay_pid*
 /ctre_sim/
 /gradle/
 /.gradle
+
+/.wpilib
+/.vscode
+/.idea
