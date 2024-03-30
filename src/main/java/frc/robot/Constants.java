@@ -38,10 +38,9 @@ public final class Constants {
     }
 
     public static final class LimelightConstants {
-        public static final double LIMELIGHT_HEIGHT = 0.4382; // meters
+        public static final double LIMELIGHT_HEIGHT = 0.47; // meters
         public static final double LIMELIGHT_ANGLE = 16; // degrees
-        public static final double TARGET_HEIGHT = 1.368425; // meters
-        //meters^
+        public static final double TARGET_HEIGHT = 1.37; // meters
         public static final double TARGET_HEIGHT_DIFFERENCE = TARGET_HEIGHT - LIMELIGHT_HEIGHT;
     }
 
@@ -73,14 +72,15 @@ public final class Constants {
         public static final PIDConstants BOTTOM_PID = new PIDConstants(0.0, 0.0, 0.0);
         public static final FFConstants BOTTOM_FF = new FFConstants(0.13, 0.00107003891);
 
-        public static final double SHOOTER_RPM = 5000;
-        public static final double AMP_RPM = 1000;
+        public static final double SHOOTER_RPM = 1000;
+        public static final double AMP_RPM = 5000;
         public static final double FEEDER_SPEED = 1;
 
         public static final double ARM_ABSOLUTE_OFFSET = -0.23;
 
         public static final double AMP_POS = 0.3;
         public static final double FEED_POS = 0.1;
+        public static final double STOW_POS = -0.09;
     }
 
     public static class IntakeConstants{
@@ -91,17 +91,16 @@ public final class Constants {
         public static final boolean ARM_INVERTED = false;
         public static final boolean ROLLER_INVERTED = false;
 
-        public static final PIDConstants ARM_PID = new PIDConstants(2.5, 1.0, 0.1, 0.1, 0.05);
+        public static final PIDConstants ARM_PID = new PIDConstants(2.5, 1.0, 0.1, 0.1, 0.01);
         public static final FFConstants ARM_FF = new FFConstants(0.0, 0.05, 0.0, 0.0);
 
         public static final double ROLLER_INTAKE_SPEED = 0.6;
         public static final double ROLLER_OUTTAKE_SPEED = -0.2;
-        public static final double ARM_GROUND_POSITION = -0.05;
+        public static final double ARM_GROUND_POSITION = -0.07;
         // public static final double ARM_INTAKE_POSITION = 0.5;
-        public static final double ARM_STOW_POSITION = 0.25;
+        public static final double ARM_STOW_POSITION = 0.14;
+        public static final double ARM_TRANSFER_POSITION = 0.28;
         public static final double ARM_TOLERANCE = 0.05;
         public static final double ARM_ABSOLUTE_OFFSET = -0.5971078;
-
-
     }
 }
