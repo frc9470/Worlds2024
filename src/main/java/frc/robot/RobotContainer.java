@@ -114,7 +114,7 @@ public class RobotContainer {
                 )
                 .onFalse(
                         intake.armToStow()
-                                .deadlineWith(intake.rollerIn())
+                                .deadlineWith(intake.rollerHold())
                 );
 
         driverXbox.rightBumper()

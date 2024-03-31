@@ -152,11 +152,7 @@ public class ShooterSubsystem extends VerticalArm {
      * @return
      */
     public Command alignShooter(VisionSubsystem vision) {
-        double distance = vision.getDistance();
-        // calculate angle based on distance
-        // interpolation formula yay!
-        double angle = angleFromDistance(distance);
-        return armToPos(()-> angle);
+        return armToPos(()-> angleFromDistance(vision.getDistance()));
     }
 
     private double angleFromDistance(double distance) {

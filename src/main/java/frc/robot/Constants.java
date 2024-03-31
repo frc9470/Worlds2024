@@ -94,7 +94,8 @@ public final class Constants {
         public static final PIDConstants ARM_PID = new PIDConstants(2.5, 1.0, 0.1, 0.1, 0.01);
         public static final FFConstants ARM_FF = new FFConstants(0.0, 0.05, 0.0, 0.0);
 
-        public static final double ROLLER_INTAKE_SPEED = 0.6;
+        public static final double ROLLER_INTAKE_SPEED = 0.4;
+        public static final double ROLLER_INTAKE_HOLD = 0.1;
         public static final double ROLLER_OUTTAKE_SPEED = -0.2;
         public static final double ARM_GROUND_POSITION = -0.07;
         // public static final double ARM_INTAKE_POSITION = 0.5;
