@@ -159,7 +159,7 @@ public class ShooterSubsystem extends VerticalArm {
     private double angleFromDistance(double distance) {
         //assuming shooting in a straight line lol
         double error = 0.0; // speed decreases quadratically do smthing with that tycho
-        return Math.atan((SPEAKER_HEIGHT - LIMELIGHT_HEIGHT)/distance) + error;
+        return 180/Math.PI * (Math.atan((SPEAKER_HEIGHT - LIMELIGHT_HEIGHT + 0.25)/distance)) + error;
     }
 
     public Command scoreAmp(){
