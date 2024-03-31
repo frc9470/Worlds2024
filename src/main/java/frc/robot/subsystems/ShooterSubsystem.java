@@ -1,10 +1,10 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -138,7 +138,7 @@ public class ShooterSubsystem extends VerticalArm {
 
             @Override
             public boolean isFinished() {
-                return Math.abs(getTopVelocityRPM() - speed) < 100;
+                return Math.abs(getTopVelocityRPM() - speed) < 150;
             }
         };
     }
@@ -153,13 +153,17 @@ public class ShooterSubsystem extends VerticalArm {
      * @return
      */
     public Command alignShooter(VisionSubsystem vision) {
-        return armToPos(()-> angleFromDistance(vision.getDistance()));
+        return armToPos(() -> {
+            if (vision.getNumTags() >= 2)
+                return angleFromDistance(vision.getDistance());
+            else return DEFAULT_SPEAKER_SHOT;
+        });
     }
 
     private double angleFromDistance(double distance) {
         //assuming shooting in a straight line lol
         double error = 0.0; // speed decreases quadratically do smthing with that tycho
-        return Math.atan((SPEAKER_HEIGHT - LIMELIGHT_HEIGHT)/distance) + error;
+        return (Math.PI/2-Math.atan((SPEAKER_HEIGHT - LIMELIGHT_HEIGHT)/distance) + error)/2/Math.PI;
     }
 
     public Command scoreAmp(){

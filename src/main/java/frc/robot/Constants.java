@@ -69,17 +69,18 @@ public final class Constants {
         public static final PIDConstants ARM_PID = new PIDConstants(4.0, 4.0, 0.0, 0.03, 0.01);
         public static final FFConstants ARM_FF = new FFConstants(0.0, 0.04, 0.0, 0.0);
 
-        public static final PIDConstants TOP_PID = new PIDConstants(0.0, 0.0, 0.0);
+        public static final PIDConstants TOP_PID = new PIDConstants(0.004, 0.0, 0.0);
         public static final FFConstants TOP_FF = new FFConstants(0.13, 0.001046622264);
-        public static final PIDConstants BOTTOM_PID = new PIDConstants(0.0, 0.0, 0.0);
+        public static final PIDConstants BOTTOM_PID = new PIDConstants(0.004, 0.0, 0.0);
         public static final FFConstants BOTTOM_FF = new FFConstants(0.13, 0.00107003891);
 
-        public static final double SHOOTER_RPM = 1000;
+        public static final double SHOOTER_RPM = 10000;
         public static final double AMP_RPM = 5000;
         public static final double FEEDER_SPEED = 1;
 
         public static final double ARM_ABSOLUTE_OFFSET = -0.23;
 
+        public static final double DEFAULT_SPEAKER_SHOT = 0.1;
         public static final double AMP_POS = 0.3;
         public static final double FEED_POS = 0.1;
         public static final double STOW_POS = -0.09;

@@ -12,6 +12,10 @@ public class VisionSubsystem extends SubsystemBase {
 
     }
 
+    public int getNumTags() {
+        return LimelightHelpers.getBotPoseEstimate_wpiBlue("").tagCount;
+    }
+
     public double getDistance() {
         double angle = Math.toRadians(LimelightHelpers.getTY(""));
         return TARGET_HEIGHT_DIFFERENCE / Math.tan(angle+ Math.toRadians(LIMELIGHT_ANGLE));
@@ -23,4 +27,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
 
+    public double getTX() {
+        return LimelightHelpers.getTX("");
+    }
 }

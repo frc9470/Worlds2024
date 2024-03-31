@@ -487,17 +487,17 @@ public class SwerveSubsystem extends SubsystemBase {
         }
     }
 
-    public Command alignToVision() {
+    public Command alignToVision(VisionSubsystem vision) {
         return new PIDCommand(
                 ANGLE_PID_L.getController(),
-                () -> Math.toRadians(LimelightHelpers.getTX("")),
+                () -> Math.toRadians(vision.getTX()),
                 () -> 0.0,
                 (double output) -> drive(new Translation2d(0, 0), output, false),
                 this
         ){
             @Override
             public boolean isFinished() {
-                return Math.abs(getController().getSetpoint() - m_measurement.getAsDouble()) < ANGLE_PID_L.getTolerance();
+                return vision.getNumTags() == 0 || Math.abs(getController().getSetpoint() - m_measurement.getAsDouble()) < ANGLE_PID_L.getTolerance();
             }
         };
     }

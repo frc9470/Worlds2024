@@ -142,7 +142,7 @@ public class RobotContainer {
                 .whileTrue(
                         shooter.runShooter(SHOOTER_RPM)
                                 .alongWith(shooter.alignShooter(vision))
-                                .alongWith(drivebase.alignToVision()) // or we define a command that does both with the vision
+                                .alongWith(drivebase.alignToVision(vision)) // or we define a command that does both with the vision
                                 .andThen(shooter.runFeeder(FEEDER_SPEED))
                 )
                 .onFalse(
