@@ -2,25 +2,25 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.6818739771842957,
-      "y": 4.426502227783203
+      "x": 1.3188563585281372,
+      "y": 5.580281734466553
     },
-    "rotation": 116.43140797451817
+    "rotation": -3.134279012999911e-14
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "3 Note Wing.1"
+            "name": "shoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "3 Note Wing.2"
+            "pathName": "Shoot Auto.1"
           }
         }
       ]

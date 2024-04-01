@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import static frc.robot.Constants.IntakeConstants.*;
@@ -10,7 +11,7 @@ public class IntakeSubsystem extends VerticalArm {
     private final CANSparkMax roller;
 
     public IntakeSubsystem() {
-        super(new CANSparkMax(INTAKE_ARM, CANSparkLowLevel.MotorType.kBrushless), ARM_INVERTED, ARM_PID, ARM_FF, 0, 1 / 48.0, ARM_ABSOLUTE_OFFSET);
+        super(new CANSparkMax(INTAKE_ARM, CANSparkLowLevel.MotorType.kBrushless), ARM_INVERTED, ARM_PID, ARM_FF, 0, 1 / 48.0, ARM_ABSOLUTE_OFFSET, true);
         roller = new CANSparkMax(INTAKE_ROLLER, CANSparkLowLevel.MotorType.kBrushless);
 
         roller.restoreFactoryDefaults();
@@ -47,6 +48,63 @@ public class IntakeSubsystem extends VerticalArm {
 
     public Command intakeUp() {
         return setIntake(0).andThen(armToStow());
+    }
+
+    public Command center() {
+        return new Command() {
+            int count = 0;
+            boolean inOut = false;
+
+            @Override
+            public void execute() {
+                count ++;
+                if (count % 20 == 0) {
+                    inOut = !inOut;
+                    if(inOut) setIntake(ROLLER_INTAKE_SPEED);
+                    else setIntake(ROLLER_OUTTAKE_SPEED);
+                }
+                SmartDashboard.putNumber("Specialcount ", count);
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                setIntake(0);
+            }
+        };
+    }
+
+    public Command center2(){
+        return rollerIn().withTimeout(0.4)
+                .andThen(rollerOut().withTimeout(0.2))
+                .andThen(rollerIn().withTimeout(0.4))
+                .andThen(rollerOut().withTimeout(0.2))
+                .andThen(rollerIn().withTimeout(0.4))
+                .andThen(rollerOut().withTimeout(0.2))
+                .andThen(rollerIn().withTimeout(0.4))
+                .andThen(rollerOut().withTimeout(0.2))
+                .andThen(rollerIn().withTimeout(0.4))
+                .andThen(rollerOut().withTimeout(0.2))
+                .andThen(rollerIn().withTimeout(0.4))
+                .andThen(rollerOut().withTimeout(0.2))
+                .andThen(rollerIn().withTimeout(0.4))
+                .andThen(rollerOut().withTimeout(0.2))
+                .andThen(rollerIn().withTimeout(0.4))
+                .andThen(rollerOut().withTimeout(0.2))
+                .andThen(rollerIn().withTimeout(0.4))
+                .andThen(rollerOut().withTimeout(0.2))
+                .andThen(rollerIn().withTimeout(0.4))
+                .andThen(rollerOut().withTimeout(0.2))
+                .andThen(rollerIn().withTimeout(0.4))
+                .andThen(rollerOut().withTimeout(0.2))
+                .andThen(rollerIn().withTimeout(0.4))
+                .andThen(rollerOut().withTimeout(0.2))
+                .andThen(rollerIn().withTimeout(0.4))
+                .andThen(rollerOut().withTimeout(0.2))
+                .andThen(rollerIn().withTimeout(0.4))
+                .andThen(rollerOut().withTimeout(0.2))
+                .andThen(rollerIn().withTimeout(0.4))
+                .andThen(rollerOut().withTimeout(0.2))
+                .andThen(rollerIn().withTimeout(0.4));
     }
 }
 /*

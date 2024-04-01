@@ -21,8 +21,9 @@ public abstract class VerticalArm extends SubsystemBase {
     protected final PIDController armPID;
     protected final ArmFeedforward armFF;
     private double offset;
+    private boolean absolute = false;
 
-    public VerticalArm(CANSparkMax arm, boolean inverted, PIDConstants pidConstants, FFConstants armFF, int encoderPort, double ratio, double offset) {
+    public VerticalArm(CANSparkMax arm, boolean inverted, PIDConstants pidConstants, FFConstants armFF, int encoderPort, double ratio, double offset, boolean absolute) {
         this.arm = arm;
         arm.restoreFactoryDefaults();
         arm.setIdleMode(CANSparkMax.IdleMode.kBrake);
@@ -43,6 +44,7 @@ public abstract class VerticalArm extends SubsystemBase {
     }
 
     public void resetEncoder() {
+        if (absolute) return;
         armEncoder.setPosition(throughBore.getAbsolutePosition() + offset);
     }
 
@@ -56,8 +58,18 @@ public abstract class VerticalArm extends SubsystemBase {
         return 2 * Math.PI * getArmPos();
     }
 
+    /*
+     map [0, 1] to [-0.5, 0.5] with an offset
+
+     */
+
     public double getArmPos() {
-        return armEncoder.getPosition();
+        if (absolute) {
+            double pos = throughBore.getAbsolutePosition();
+            if (pos < 0.4) pos += 1;
+            pos += offset;
+            return pos;
+        } else return armEncoder.getPosition();
     }
 
     @Override
@@ -79,6 +91,7 @@ public abstract class VerticalArm extends SubsystemBase {
         SmartDashboard.putNumber(this.getName() + " Absolute Encoder Position", throughBore.getAbsolutePosition());
         SmartDashboard.putData(this.getName() + " PID", armPID);
     }
+
 
     /*********************************************************************************
      ********************************* COMMANDS **************************************

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.6818739771842957,
-      "y": 4.426502227783203
+      "x": 1.307306170463562,
+      "y": 5.550499439239502
     },
-    "rotation": 116.43140797451817
+    "rotation": 179.96468369512831
   },
   "command": {
     "type": "sequential",
@@ -14,13 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "3 Note Wing.1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "3 Note Wing.2"
+            "pathName": "3 Note Close"
           }
         }
       ]

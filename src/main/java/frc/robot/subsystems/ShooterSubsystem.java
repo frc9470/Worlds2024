@@ -23,7 +23,7 @@ public class ShooterSubsystem extends VerticalArm {
 
 
     public ShooterSubsystem() {
-        super(new CANSparkMax(SHOOTER_ARM, CANSparkLowLevel.MotorType.kBrushless), ARM_INVERTED, ARM_PID, ARM_FF, 1, 12.0 / 48.0 / 28,  ARM_ABSOLUTE_OFFSET);
+        super(new CANSparkMax(SHOOTER_ARM, CANSparkLowLevel.MotorType.kBrushless), ARM_INVERTED, ARM_PID, ARM_FF, 1, 12.0 / 48.0 / 28,  ARM_ABSOLUTE_OFFSET, false);
         top = new CANSparkMax(SHOOTER_TOP, CANSparkLowLevel.MotorType.kBrushless);
         bottom = new CANSparkMax(SHOOTER_BOTTOM, CANSparkLowLevel.MotorType.kBrushless);
         feeder = new CANSparkMax(SHOOTER_FEED, CANSparkLowLevel.MotorType.kBrushless);
@@ -31,6 +31,9 @@ public class ShooterSubsystem extends VerticalArm {
         top.restoreFactoryDefaults();
         bottom.restoreFactoryDefaults();
         feeder.restoreFactoryDefaults();
+
+        top.setIdleMode(CANSparkBase.IdleMode.kBrake);
+        top.setIdleMode(CANSparkBase.IdleMode.kBrake);
 
         top.setInverted(TOP_INVERTED);
         bottom.setInverted(BOTTOM_INVERTED);
@@ -133,7 +136,7 @@ public class ShooterSubsystem extends VerticalArm {
 
             @Override
             public void end(boolean interrupted) {
-                setShooter(0);
+                //setShooter(0);
             }
 
             @Override
@@ -172,14 +175,14 @@ public class ShooterSubsystem extends VerticalArm {
                 .andThen(
                         this.runShooter(AMP_RPM)
                                 .alongWith(this.runFeeder(FEEDER_SPEED))
-                                .withTimeout(1))
+                                .withTimeout(1)
+                                )
                 .andThen(this.stopShooter());
     }
 
     public Command scoreShooter(){
         return this.runShooter(SHOOTER_RPM)
-                .andThen(this.runFeeder(FEEDER_SPEED))
-                .withTimeout(1)
+                .andThen(this.runFeeder(FEEDER_SPEED).withTimeout(1))
                 .andThen(this.stopShooter());
     }
 }

@@ -27,6 +27,7 @@ import frc.robot.subsystems.VisionSubsystem;
 
 import java.io.File;
 
+import static frc.robot.Constants.OperatorConstants.FEEDER_DELAY;
 import static frc.robot.Constants.ShooterConstants.*;
 
 /**
@@ -38,6 +39,7 @@ public class RobotContainer {
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
     final CommandXboxController driverXbox = new CommandXboxController(0);
+    final CommandXboxController operatorXbox = new CommandXboxController(1);
     // The robot's subsystems and commands are defined here...
     private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
             "swerve"));
@@ -61,7 +63,7 @@ public class RobotContainer {
                         OperatorConstants.LEFT_Y_DEADBAND),
                 () -> -MathUtil.applyDeadband(driverXbox.getLeftX(),
                         OperatorConstants.LEFT_X_DEADBAND),
-                () -> -MathUtil.applyDeadband(driverXbox.getRightX(),
+                () -> MathUtil.applyDeadband(driverXbox.getRightX(),
                         OperatorConstants.RIGHT_X_DEADBAND),
                 driverXbox.getHID()::getYButtonPressed,
                 driverXbox.getHID()::getAButtonPressed,
@@ -76,8 +78,8 @@ public class RobotContainer {
         Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
                 () -> MathUtil.applyDeadband(-driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
                 () -> MathUtil.applyDeadband(-driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-                () -> driverXbox.getRightX(),
-                () -> driverXbox.getRightY());
+                () -> -driverXbox.getRightX(),
+                () -> -driverXbox.getRightY());
 
 
         Command driveFieldOrientedDirectAngleSim = drivebase.simDriveCommand(
@@ -85,8 +87,8 @@ public class RobotContainer {
                 () -> MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
                 () -> driverXbox.getRawAxis(2));
 
-//        drivebase.setDefaultCommand(
-//                !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
+        drivebase.setDefaultCommand(
+                !RobotBase.isSimulation() ? closedAbsoluteDriveAdv : driveFieldOrientedDirectAngleSim);
     }
 
     private void configAuto() {
@@ -103,8 +105,39 @@ public class RobotContainer {
     private void configureBindings() {
         // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
-        driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-        driverXbox.x().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
+        operatorXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+        operatorXbox.x().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
+        operatorXbox.y().whileTrue(shooter.runFeeder(-0.2).alongWith(shooter.runShooter(-200)));
+        operatorXbox.leftBumper().whileTrue(intake.center2());
+
+        operatorXbox.rightTrigger()
+                        .whileTrue(shooter.runShooter(SHOOTER_RPM))
+                                .onFalse(shooter.stopShooter());
+        operatorXbox.leftTrigger()
+                        .whileTrue(shooter.runShooter(AMP_RPM))
+                .onFalse(shooter.stopShooter());
+
+        // feed
+        operatorXbox.rightBumper()
+                .whileTrue(
+                        shooter.armToFeed()
+                                .alongWith(
+                                        new WaitCommand(FEEDER_DELAY).andThen(intake.armToTransfer())
+                                )
+                                .andThen(
+                                        intake.rollerOut()
+                                                .alongWith(shooter.getFeederCommand())
+                                )
+
+                )
+                .onFalse(
+                        intake.armToStow()
+                                .alongWith(
+                                        new WaitCommand(1).andThen(shooter.armToStow())
+                                )
+
+                );
+
 
         //button for intake
         driverXbox.leftBumper()
@@ -114,28 +147,10 @@ public class RobotContainer {
                 )
                 .onFalse(
                         intake.armToStow()
-                                .deadlineWith(intake.rollerHold())
+                                .deadlineWith(intake.center2())
                 );
 
-        driverXbox.rightBumper()
-                        .whileTrue(
-                                shooter.armToFeed()
-                                .alongWith(
-                                        new WaitCommand(1).andThen(intake.armToTransfer())
-                                )
-                                        .andThen(
-                                            intake.rollerOut()
-                                            .alongWith(shooter.getFeederCommand())
-                                        )
 
-                        )
-                        .onFalse(
-                                intake.armToStow()
-                                        .alongWith(
-                                                new WaitCommand(1).andThen(shooter.armToStow())
-                                        )
-
-                        );
 
         // Speaker
         driverXbox.rightTrigger()
@@ -147,26 +162,23 @@ public class RobotContainer {
                 )
                 .onFalse(
                         shooter.armToStow()
-                        .alongWith(shooter.stopShooter())
                 );
 
         // Amp
         driverXbox.leftTrigger()
                 .whileTrue(
                         shooter.armToAmp()
+                                .deadlineWith(shooter.runShooter(AMP_RPM)) // rev up amp while reaching position but do not wait for adequate rpm
                                 //.alongWith(drivebase.alignAmp())
                                 .andThen(
                                         shooter.runShooter(AMP_RPM)
-                                                .alongWith(shooter.runFeeder(FEEDER_SPEED)))
+                                                .alongWith(shooter.getFeederCommand()))
                 ).onFalse(
                         shooter.armToStow()
-                        .alongWith(shooter.stopShooter())
                 );
 
-        driverXbox.y().whileTrue(
-                shooter.runShooter(10000)
-                        .alongWith(shooter.getFeederCommand())
-        );
+        driverXbox.rightBumper()
+                .whileTrue(shooter.getFeederCommand());
 
     }
 
