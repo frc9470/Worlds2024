@@ -26,11 +26,11 @@ public final class Constants {
 
     public static final class AutonConstants {
 
-        public static final com.pathplanner.lib.util.PIDConstants TRANSLATION_PID = new com.pathplanner.lib.util.PIDConstants(0.7, 0, 0);
-        public static final com.pathplanner.lib.util.PIDConstants ANGLE_PID = new com.pathplanner.lib.util.PIDConstants(0.4, 0, 0.01);
+        public static final com.pathplanner.lib.util.PIDConstants TRANSLATION_PID = new com.pathplanner.lib.util.PIDConstants(2, 0, 0);
+        public static final com.pathplanner.lib.util.PIDConstants ANGLE_PID = new com.pathplanner.lib.util.PIDConstants(0.5, 0, 0.01);
         public static final PIDConstants ANGLE_PID_L = new PIDConstants(0.4, 0, 0.01, 0, 0.01);
     }
-
+//
     public static final class DrivebaseConstants {
 
         // Hold time on motor brakes when disabled
@@ -38,7 +38,7 @@ public final class Constants {
     }
 
     public static final class LimelightConstants {
-        public static final double LIMELIGHT_HEIGHT = 0.47; // meters
+        public static final double LIMELIGHT_HEIGHT = 0.44; // meters
         public static final double LIMELIGHT_ANGLE = 30; // degrees
         public static final double TARGET_HEIGHT = 1.37; // meters
 
@@ -77,13 +77,14 @@ public final class Constants {
         public static final PIDConstants BOTTOM_PID = new PIDConstants(0.005, 0.0, 0.0);
         public static final FFConstants BOTTOM_FF = new FFConstants(0.13, 0.00107003891);
 
-        public static final double SHOOTER_RPM = 10000;
-        public static final double AMP_RPM = 7500;
+        public static final double SHOOTER_RPM = 8000;
+        public static final double AMP_RPM = 5000;
+        public static final double AUTO_RPM = 4000;
         public static final double FEEDER_SPEED = 0.7;
 
         public static final double ARM_ABSOLUTE_OFFSET = -0.23;
 
-        public static final double DEFAULT_SPEAKER_SHOT = 0.06;
+        public static final double DEFAULT_SPEAKER_SHOT = 0.083;
         public static final double AMP_POS = 0.3;
         public static final double FEED_POS = 0.1;
         public static final double STOW_POS = -0.07;
@@ -100,7 +101,7 @@ public final class Constants {
         public static final PIDConstants ARM_PID = new PIDConstants(2.5, 1.0, 0.1, 0.1, 0.01);
         public static final FFConstants ARM_FF = new FFConstants(0.0, 0.05, 0.0, 0.0);
 
-        public static final double ROLLER_INTAKE_SPEED = 0.6;
+        public static final double ROLLER_INTAKE_SPEED = 0.45;
         public static final double ROLLER_INTAKE_HOLD = 0.2;
         public static final double ROLLER_OUTTAKE_SPEED = -0.2;
         public static final double ARM_GROUND_POSITION = -0.07;

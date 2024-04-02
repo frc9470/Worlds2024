@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OperatorConstants;
@@ -25,6 +26,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
+import javax.naming.Name;
 import java.io.File;
 
 import static frc.robot.Constants.OperatorConstants.FEEDER_DELAY;
@@ -93,10 +95,10 @@ public class RobotContainer {
 
     private void configAuto() {
         // Register names for the auto commands
-        NamedCommands.registerCommand("shoot", shooter.scoreShooter());
+        NamedCommands.registerCommand("shoot", shooter.scoreShooter(/*shooter.getArmPosRad()*/));
         NamedCommands.registerCommand("amp", shooter.scoreAmp());
         NamedCommands.registerCommand("intakedown", intake.intakeDown());
-        NamedCommands.registerCommand("intakeup", intake.intakeUp());
+        NamedCommands.registerCommand("intakeup", getFeederCommand());
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Mode", autoChooser);
@@ -108,7 +110,9 @@ public class RobotContainer {
         operatorXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
         operatorXbox.x().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
         operatorXbox.y().whileTrue(shooter.runFeeder(-0.2).alongWith(shooter.runShooter(-200)));
+        operatorXbox.b().onTrue((Commands.runOnce(shooter::resetEncoder).andThen(intake::resetEncoder)));
         operatorXbox.leftBumper().whileTrue(intake.center2());
+        operatorXbox.rightBumper().whileTrue(getFeederCommand());
 
         operatorXbox.rightTrigger()
                         .whileTrue(shooter.runShooter(SHOOTER_RPM))
@@ -118,25 +122,25 @@ public class RobotContainer {
                 .onFalse(shooter.stopShooter());
 
         // feed
-        operatorXbox.rightBumper()
-                .whileTrue(
-                        shooter.armToFeed()
-                                .alongWith(
-                                        new WaitCommand(FEEDER_DELAY).andThen(intake.armToTransfer())
-                                )
-                                .andThen(
-                                        intake.rollerOut()
-                                                .alongWith(shooter.getFeederCommand())
-                                )
-
-                )
-                .onFalse(
-                        intake.armToStow()
-                                .alongWith(
-                                        new WaitCommand(1).andThen(shooter.armToStow())
-                                )
-
-                );
+//        operatorXbox.rightBumper()
+//                .whileTrue(
+//                        shooter.armToFeed()
+//                                .alongWith(
+//                                        new WaitCommand(FEEDER_DELAY).andThen(intake.armToTransfer())
+//                                )
+//                                .andThen(
+//                                        intake.rollerOut()
+//                                                .alongWith(shooter.getFeederCommand())
+//                                )
+//
+//                )
+//                .onFalse(
+//                        intake.armToStow()
+//                                .alongWith(
+//                                        new WaitCommand(1).andThen(shooter.armToStow())
+//                                )
+//
+//                );
 
 
         //button for intake
@@ -199,6 +203,21 @@ public class RobotContainer {
     public void setMotorBrake(boolean brake) {
         drivebase.setMotorBrake(brake);
     }
+
+    public Command getFeederCommand(){
+        return shooter.armToFeed()
+                .alongWith(
+                        new WaitCommand(FEEDER_DELAY).andThen(intake.armToTransfer())
+                                .deadlineWith(intake.rollerIn())
+                )
+                .andThen(
+                        intake.rollerOut()
+                                .alongWith(shooter.getFeederCommand()).withTimeout(0.2)
+                )
+                .andThen(intake.armToStow()
+                        .deadlineWith(intake.rollerOut()));
+    }
+
 }
 /*
 ⠀⠀⠀⠀⠀⠀⠀⠀⢠⣾⣯⣟⡆⢸⢠⣯⡃⠀⠀⠀⠀⢹⣆⠀⠀⠀⠁⠀⠀⠀⠀⠀⠀⠀⢈⣿⠉⢹⢉⢹⡌⢉⡜⠚⠭⠤⠋⠑⣼⣿⢟⡿⣿⣻⣯⣸⡇⣿⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀

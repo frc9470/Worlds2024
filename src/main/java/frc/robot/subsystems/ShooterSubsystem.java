@@ -7,6 +7,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import static frc.robot.Constants.LimelightConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
@@ -106,6 +107,8 @@ public class ShooterSubsystem extends VerticalArm {
     public Command armToFeed() {return armToPos(() -> FEED_POS);}
     public Command armToStow() {return armToPos(() -> STOW_POS);}
 
+    public Command armToAngle(double angle) {return armToPos(() -> angle);}
+
     public Command runFeeder(double speed) {
         return new Command() {
             @Override
@@ -179,11 +182,13 @@ public class ShooterSubsystem extends VerticalArm {
                                 )
                 .andThen(this.stopShooter());
     }
-
     public Command scoreShooter(){
-        return this.runShooter(SHOOTER_RPM)
-                .andThen(this.runFeeder(FEEDER_SPEED).withTimeout(1))
-                .andThen(this.stopShooter());
+        return new InstantCommand(() -> {SmartDashboard.putNumber("ur mom", 69);})
+               // .andThen(this.armToAngle(angle))
+        .andThen(this.runShooter(AUTO_RPM).alongWith(armToPos(() -> DEFAULT_SPEAKER_SHOT)))
+                .andThen(this.runFeeder(FEEDER_SPEED).withTimeout(0.5))
+                .andThen(new InstantCommand(() -> {SmartDashboard.putNumber("ur mom", 42);}));
+
     }
 }
 /*
