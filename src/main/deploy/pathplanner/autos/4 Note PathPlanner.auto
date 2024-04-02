@@ -60,6 +60,94 @@
           "data": {
             "name": "shoot"
           }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "mogged6962c"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakedown"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "mogged6962d"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeup"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "mogged6962e"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakedown"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "mogged6962f"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeup"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
         }
       ]
     }

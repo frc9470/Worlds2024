@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import static frc.robot.Constants.IntakeConstants.*;
@@ -50,30 +49,8 @@ public class IntakeSubsystem extends VerticalArm {
         return setIntake(0).andThen(armToStow());
     }
 
-    public Command center() {
-        return new Command() {
-            int count = 0;
-            boolean inOut = false;
 
-            @Override
-            public void execute() {
-                count ++;
-                if (count % 20 == 0) {
-                    inOut = !inOut;
-                    if(inOut) setIntake(ROLLER_INTAKE_SPEED);
-                    else setIntake(ROLLER_OUTTAKE_SPEED);
-                }
-                SmartDashboard.putNumber("Specialcount ", count);
-            }
-
-            @Override
-            public void end(boolean interrupted) {
-                setIntake(0);
-            }
-        };
-    }
-
-    public Command center2(){
+    public Command center(){
         return rollerIn().withTimeout(0.4)
                 .andThen(rollerOut().withTimeout(0.2))
                 .andThen(rollerIn().withTimeout(0.4))

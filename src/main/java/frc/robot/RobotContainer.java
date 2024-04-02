@@ -95,7 +95,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("intakedown", intake.intakeDown());
         NamedCommands.registerCommand("intakeup", getAutoFeederCommand());
 
-        autoChooser = AutoBuilder.buildAutoChooser();
+        autoChooser = AutoBuilder.buildAutoChooser("4 Note PathPlanner");
         SmartDashboard.putData("Auto Mode", autoChooser);
     }
 
@@ -106,7 +106,7 @@ public class RobotContainer {
         operatorXbox.x().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
         operatorXbox.y().whileTrue(shooter.runFeeder(-0.2).alongWith(shooter.runShooter(-200)));
         operatorXbox.b().onTrue((Commands.runOnce(shooter::resetEncoder).andThen(intake::resetEncoder)));
-        operatorXbox.leftBumper().whileTrue(intake.center2());
+        operatorXbox.leftBumper().whileTrue(intake.center());
 
         operatorXbox.rightTrigger()
                         .whileTrue(shooter.runShooter(SHOOTER_RPM))
@@ -121,7 +121,7 @@ public class RobotContainer {
                         shooter.armToFeed()
                                 .alongWith(
                                         new WaitCommand(FEEDER_DELAY).andThen(intake.armToTransfer())
-                                                .deadlineWith(intake.rollerIn())
+                                                .deadlineWith(intake.rollerHold())
                                 )
                                 .andThen(
                                         intake.rollerOut()
@@ -146,7 +146,7 @@ public class RobotContainer {
                 )
                 .onFalse(
                         intake.armToStow()
-                                .deadlineWith(intake.center2())
+                                .deadlineWith(intake.center())
                 );
 
 
@@ -203,7 +203,7 @@ public class RobotContainer {
         return shooter.armToFeed()
                 .alongWith(
                         new WaitCommand(FEEDER_DELAY).andThen(intake.armToTransfer())
-                                .deadlineWith(intake.rollerIn())
+                                .deadlineWith(intake.rollerHold())
                 )
                 .andThen(
                         intake.rollerOut()

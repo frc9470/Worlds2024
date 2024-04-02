@@ -26,8 +26,8 @@ public final class Constants {
 
     public static final class AutonConstants {
 
-        public static final com.pathplanner.lib.util.PIDConstants TRANSLATION_PID = new com.pathplanner.lib.util.PIDConstants(2, 0, 0);
-        public static final com.pathplanner.lib.util.PIDConstants ANGLE_PID = new com.pathplanner.lib.util.PIDConstants(0.5, 0, 0.01);
+        public static final com.pathplanner.lib.util.PIDConstants TRANSLATION_PID = new com.pathplanner.lib.util.PIDConstants(0.7, 0, 0);
+        public static final com.pathplanner.lib.util.PIDConstants ANGLE_PID = new com.pathplanner.lib.util.PIDConstants(0.9, 0, 0.01);
         public static final PIDConstants ANGLE_PID_L = new PIDConstants(0.4, 0, 0.01, 0, 0.01);
     }
 //
@@ -79,12 +79,12 @@ public final class Constants {
 
         public static final double SHOOTER_RPM = 8000;
         public static final double AMP_RPM = 5000;
-        public static final double AUTO_RPM = 4000;
+        public static final double AUTO_RPM = 6000;
         public static final double FEEDER_SPEED = 0.7;
 
         public static final double ARM_ABSOLUTE_OFFSET = -0.23;
 
-        public static final double DEFAULT_SPEAKER_SHOT = 0.083;
+        public static final double DEFAULT_SPEAKER_SHOT = 0.075;
         public static final double AMP_POS = 0.3;
         public static final double FEED_POS = 0.1;
         public static final double STOW_POS = -0.07;
