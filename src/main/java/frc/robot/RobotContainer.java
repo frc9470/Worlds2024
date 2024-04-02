@@ -7,16 +7,12 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OperatorConstants;
@@ -26,7 +22,6 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
-import javax.naming.Name;
 import java.io.File;
 
 import static frc.robot.Constants.OperatorConstants.FEEDER_DELAY;
@@ -98,7 +93,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("shoot", shooter.scoreShooter(/*shooter.getArmPosRad()*/));
         NamedCommands.registerCommand("amp", shooter.scoreAmp());
         NamedCommands.registerCommand("intakedown", intake.intakeDown());
-        NamedCommands.registerCommand("intakeup", getFeederCommand());
+        NamedCommands.registerCommand("intakeup", getAutoFeederCommand());
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Mode", autoChooser);
@@ -112,7 +107,6 @@ public class RobotContainer {
         operatorXbox.y().whileTrue(shooter.runFeeder(-0.2).alongWith(shooter.runShooter(-200)));
         operatorXbox.b().onTrue((Commands.runOnce(shooter::resetEncoder).andThen(intake::resetEncoder)));
         operatorXbox.leftBumper().whileTrue(intake.center2());
-        operatorXbox.rightBumper().whileTrue(getFeederCommand());
 
         operatorXbox.rightTrigger()
                         .whileTrue(shooter.runShooter(SHOOTER_RPM))
@@ -122,25 +116,26 @@ public class RobotContainer {
                 .onFalse(shooter.stopShooter());
 
         // feed
-//        operatorXbox.rightBumper()
-//                .whileTrue(
-//                        shooter.armToFeed()
-//                                .alongWith(
-//                                        new WaitCommand(FEEDER_DELAY).andThen(intake.armToTransfer())
-//                                )
-//                                .andThen(
-//                                        intake.rollerOut()
-//                                                .alongWith(shooter.getFeederCommand())
-//                                )
-//
-//                )
-//                .onFalse(
-//                        intake.armToStow()
-//                                .alongWith(
-//                                        new WaitCommand(1).andThen(shooter.armToStow())
-//                                )
-//
-//                );
+        operatorXbox.rightBumper()
+                .whileTrue(
+                        shooter.armToFeed()
+                                .alongWith(
+                                        new WaitCommand(FEEDER_DELAY).andThen(intake.armToTransfer())
+                                                .deadlineWith(intake.rollerIn())
+                                )
+                                .andThen(
+                                        intake.rollerOut()
+                                                .alongWith(shooter.getFeederCommand()).withTimeout(0.2)
+                                )
+
+                )
+                .onFalse(
+                        intake.armToStow()
+                                .alongWith(
+                                        new WaitCommand(0.6).andThen(shooter.armToStow())
+                                )
+
+                );
 
 
         //button for intake
@@ -204,7 +199,7 @@ public class RobotContainer {
         drivebase.setMotorBrake(brake);
     }
 
-    public Command getFeederCommand(){
+    public Command getAutoFeederCommand(){
         return shooter.armToFeed()
                 .alongWith(
                         new WaitCommand(FEEDER_DELAY).andThen(intake.armToTransfer())
