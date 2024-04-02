@@ -54,7 +54,8 @@
     },
     "elastic@2": {
       "open": true
-    }
+    },
+    "visible": true
   },
   "NetworkTables View": {
     "visible": false
