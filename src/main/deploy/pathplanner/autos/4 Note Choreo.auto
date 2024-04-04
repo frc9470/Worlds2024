@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3586869349664628,
-      "y": 5.581893997121328
+      "x": 1.310699224472046,
+      "y": 5.553553104400635
     },
-    "rotation": -179.39283851256536
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -24,7 +24,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "mogged6962a"
+                  "pathName": "4 Note.1"
                 }
               },
               {
@@ -37,15 +37,28 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "intakeup"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "4 Note.2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeup"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "shoot4note1"
+            "name": "shoot"
           }
         },
         {
@@ -55,7 +68,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "mogged6962b"
+                  "pathName": "4 Note.3"
                 }
               },
               {
@@ -68,15 +81,28 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "intakeup"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "4 Note.4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeup"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "shoot4note2"
+            "name": "shoot"
           }
         },
         {
@@ -86,7 +112,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "mogged6962c"
+                  "pathName": "4 Note.5"
                 }
               },
               {
@@ -99,20 +125,33 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "intakeup"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "4 Note.6"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeup"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "shoot4note3"
+            "name": "shoot"
           }
         }
       ]
     }
   },
   "folder": null,
-  "choreoAuto": false
+  "choreoAuto": true
 }

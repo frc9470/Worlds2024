@@ -23,8 +23,10 @@ import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 import java.io.File;
+import java.util.List;
 
-import static frc.robot.Constants.OperatorConstants.FEEDER_DELAY;
+import static frc.robot.Constants.AutonConstants.*;
+import static frc.robot.Constants.OperatorConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
 /**
@@ -46,7 +48,6 @@ public class RobotContainer {
     private VisionSubsystem vision = new VisionSubsystem();
 
     private SendableChooser<Command> autoChooser;
-
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -90,13 +91,31 @@ public class RobotContainer {
 
     private void configAuto() {
         // Register names for the auto commands
-        NamedCommands.registerCommand("shoot", shooter.scoreShooter(/*shooter.getArmPosRad()*/));
+        NamedCommands.registerCommand("shoot", shooter.scoreShooter());
         NamedCommands.registerCommand("amp", shooter.scoreAmp());
         NamedCommands.registerCommand("intakedown", intake.intakeDown());
         NamedCommands.registerCommand("intakeup", getAutoFeederCommand());
 
-        autoChooser = AutoBuilder.buildAutoChooser("4 Note PathPlanner");
+        registerShooterAngles("3note", THREE_NOTE_ANGLES);
+        registerShooterSpeeds("4Snote", FOUR_NOTE_SPEEDS_TOP, FOUR_NOTE_SPEEDS_BOTTOM);
+
+        registerShooterSpeeds("3Snote", THREE_NOTE_SPEEDS_TOP, THREE_NOTE_SPEEDS_BOTTOM);
+
+        autoChooser = AutoBuilder.buildAutoChooser("wing 3");
         SmartDashboard.putData("Auto Mode", autoChooser);
+    }
+
+    private void registerShooterAngles(String prefix, List<Double> angles) {
+        for(int i = 0; i < angles.size(); i ++){
+            NamedCommands.registerCommand("shoot" + prefix + (i+1), shooter.scoreShooter(angles.get(i)));
+        }
+    }
+
+    private void registerShooterSpeeds(String prefix, List<Double> topSpeeds, List<Double> bottomSpeeds){
+        for(int i = 0; i < topSpeeds.size(); i++){
+            NamedCommands.registerCommand("rev" + prefix + (i+1), shooter.revShooter(topSpeeds.get(i), bottomSpeeds.get(i)));
+            NamedCommands.registerCommand("shoot" + prefix + (i+1), getAutoFeederShootCommand(topSpeeds.get(i), bottomSpeeds.get(i)));
+        }
     }
 
     private void configureBindings() {
@@ -125,14 +144,15 @@ public class RobotContainer {
                                 )
                                 .andThen(
                                         intake.rollerOut()
-                                                .alongWith(shooter.getFeederCommand()).withTimeout(0.2)
+                                                .alongWith(shooter.getFeederCommand())
                                 )
 
                 )
                 .onFalse(
                         intake.armToStow()
                                 .alongWith(
-                                        new WaitCommand(0.6).andThen(shooter.armToStow())
+                                        shooter.getFeederHoldCommand().withTimeout(0.5)
+                                                .alongWith( new WaitCommand(0.6).andThen(shooter.armToStow()))
                                 )
 
                 );
@@ -212,6 +232,20 @@ public class RobotContainer {
                 .andThen(intake.armToStow()
                         .deadlineWith(intake.rollerOut()));
     }
+
+    public Command getAutoFeederShootCommand(double top, double bottom){
+        return shooter.armToFeed()
+                .alongWith(
+                        new WaitCommand(FEEDER_DELAY).andThen(intake.armToTransfer())
+                                .deadlineWith(intake.rollerHold())
+                )
+                .andThen(shooter.runShooter(top, bottom))
+                .andThen(
+                        intake.rollerOut()
+                                .alongWith(shooter.getFeederCommand()).withTimeout(0.5)
+                );
+    }
+
 
 }
 /*

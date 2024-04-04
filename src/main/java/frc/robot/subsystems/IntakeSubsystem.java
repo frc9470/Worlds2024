@@ -10,7 +10,7 @@ public class IntakeSubsystem extends VerticalArm {
     private final CANSparkMax roller;
 
     public IntakeSubsystem() {
-        super(new CANSparkMax(INTAKE_ARM, CANSparkLowLevel.MotorType.kBrushless), ARM_INVERTED, ARM_PID, ARM_FF, 0, 1 / 48.0, ARM_ABSOLUTE_OFFSET, true);
+        super(new CANSparkMax(INTAKE_ARM, CANSparkLowLevel.MotorType.kBrushless), ARM_INVERTED, ARM_PID, ARM_FF, 0, 1 / 48.0, ARM_ABSOLUTE_OFFSET, false);
         roller = new CANSparkMax(INTAKE_ROLLER, CANSparkLowLevel.MotorType.kBrushless);
 
         roller.restoreFactoryDefaults();

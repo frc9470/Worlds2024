@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
+
 import static frc.robot.Constants.LimelightConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
@@ -20,9 +21,8 @@ public class ShooterSubsystem extends VerticalArm {
     private final PIDController bottomPID;
     private final SimpleMotorFeedforward topFF;
     private final SimpleMotorFeedforward bottomFF;
-    private double flywheelSetpoint = 0.0;
-
-
+    private double flywheelSetpointTop = 0.0;
+    private double flywheelSetpointBot = 0.0;
     public ShooterSubsystem() {
         super(new CANSparkMax(SHOOTER_ARM, CANSparkLowLevel.MotorType.kBrushless), ARM_INVERTED, ARM_PID, ARM_FF, 1, 12.0 / 48.0 / 28,  ARM_ABSOLUTE_OFFSET, false);
         top = new CANSparkMax(SHOOTER_TOP, CANSparkLowLevel.MotorType.kBrushless);
@@ -47,13 +47,12 @@ public class ShooterSubsystem extends VerticalArm {
         bottomPID = BOTTOM_PID.getController();
         topFF = TOP_FF.getSimpleFF();
         bottomFF = BOTTOM_FF.getSimpleFF();
-
     }
 
     @Override
     public void periodic() {
         super.periodic();
-        setShooterControl(flywheelSetpoint);
+        setShooterControl(flywheelSetpointTop, flywheelSetpointBot);
 
         // Telemetry
         SmartDashboard.putNumber("Shooter Top RPM", getTopVelocityRPM());
@@ -91,8 +90,9 @@ public class ShooterSubsystem extends VerticalArm {
         setShooterControl(speed, speed);
     }
 
-    public void setShooter(double speed) {
-        this.flywheelSetpoint = speed;
+    public void setShooter(double speed_top, double speed_bot) {
+        this.flywheelSetpointTop = speed_top;
+        this.flywheelSetpointBot = speed_bot;
     }
 
 
@@ -122,19 +122,27 @@ public class ShooterSubsystem extends VerticalArm {
                 super.end(interrupted);
                 feeder.set(0);
             }
+
+//            @Override
+//            public boolean isFinished() {
+//                return sensorRange < FEEDER_WIDTH || sensorRange > 100;
+//            }
         };
     }
 
     public Command getFeederCommand() {
         return runFeeder(FEEDER_SPEED);
     }
+    public Command getFeederHoldCommand() {
+        return runFeeder(FEEDER_SPEED_SLOW);
+    }
 
-    public Command runShooter(double speed) {
+    public Command runShooter(double speed_top, double speed_bot) {
         return new Command() {
             @Override
             public void initialize() {
                 super.initialize();
-                setShooter(speed);
+                setShooter(speed_top, speed_bot);
             }
 
             @Override
@@ -144,14 +152,34 @@ public class ShooterSubsystem extends VerticalArm {
 
             @Override
             public boolean isFinished() {
-                return Math.abs(getTopVelocityRPM() - speed) < 150;
+                return (Math.abs(getTopVelocityRPM() - speed_top) < 150) && (Math.abs(getBottomVelocityRPM() - speed_bot) < 150);
+            }
+        };
+    }
+
+    public Command runShooter(double speed) {
+        return new Command() {
+            @Override
+            public void initialize() {
+                super.initialize();
+                setShooter(speed, speed);
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                //setShooter(0);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return (Math.abs(getTopVelocityRPM() - speed) < 150) && (Math.abs(getBottomVelocityRPM() - speed) < 150);
             }
         };
     }
 
 
     public Command stopShooter() {
-        return runShooter(0);
+        return runShooter(0,0);
     }
 
     /**
@@ -184,11 +212,23 @@ public class ShooterSubsystem extends VerticalArm {
     }
     public Command scoreShooter(){
         return new InstantCommand(() -> {SmartDashboard.putNumber("ur mom", 69);})
-               // .andThen(this.armToAngle(angle))
-        .andThen(this.runShooter(AUTO_RPM).alongWith(armToPos(() -> DEFAULT_SPEAKER_SHOT)))
+        .andThen(this.runShooter(AUTO_RPM_TOP, AUTO_RPM_BOT).alongWith(armToPos(() -> DEFAULT_SPEAKER_SHOT)))
                 .andThen(this.runFeeder(FEEDER_SPEED).withTimeout(0.5))
                 .andThen(new InstantCommand(() -> {SmartDashboard.putNumber("ur mom", 42);}));
+    }
 
+    public Command scoreShooter(double angle){
+        return this.runShooter(AUTO_RPM, AUTO_RPM).alongWith(armToPos(() -> angle))
+                .andThen(this.runFeeder(FEEDER_SPEED).withTimeout(0.3));
+    }
+
+    public Command scoreShooter(double top, double bottom){
+        return this.runShooter(top, bottom)
+                .andThen(this.runFeeder(FEEDER_SPEED).withTimeout(0.3));
+    }
+
+    public Command revShooter(double top, double bottom){
+        return this.runShooter(top, bottom);
     }
 }
 /*

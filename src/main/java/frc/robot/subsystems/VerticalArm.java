@@ -37,6 +37,8 @@ public abstract class VerticalArm extends SubsystemBase {
         armEncoder = arm.getEncoder();
         armEncoder.setPositionConversionFactor(ratio);
 
+        this.absolute = absolute;
+
         this.offset = offset;
         resetEncoder();
 
@@ -44,8 +46,14 @@ public abstract class VerticalArm extends SubsystemBase {
     }
 
     public void resetEncoder() {
-        if (absolute) return;
-        armEncoder.setPosition(throughBore.getAbsolutePosition() + offset);
+
+        System.out.println("Resetting non absolute based encoder for arm");
+        System.out.println("Subsystem: " + this.getName());
+        System.out.println("Absolute Encoder Position: " + throughBore.getAbsolutePosition());
+        System.out.println("Clamped Absolute Encoder Position: " + clampAbsolute(throughBore.getAbsolutePosition()));
+        System.out.println("Offset: " + offset);
+        System.out.println("After Applying Offset: " + (clampAbsolute(throughBore.getAbsolutePosition()) + offset));
+        armEncoder.setPosition(clampAbsolute(throughBore.getAbsolutePosition()) + offset);
     }
 
     public void setArmSetpoint(double pos) {
@@ -64,12 +72,18 @@ public abstract class VerticalArm extends SubsystemBase {
      */
 
     public double getArmPos() {
-        if (absolute) {
-            double pos = throughBore.getAbsolutePosition();
-            if (pos < 0.4) pos += 1;
-            pos += offset;
-            return pos;
-        } else return armEncoder.getPosition();
+//        if (absolute) {
+//            double pos = throughBore.getAbsolutePosition();
+//            pos = clampAbsolute(pos);
+//            pos += offset;
+//            return pos;
+//        } else
+        return armEncoder.getPosition();
+    }
+
+    public double clampAbsolute(double pos){
+        if (pos < 0.3) pos += 1;
+        return pos;
     }
 
     @Override

@@ -10,6 +10,8 @@ import frc.robot.util.FFConstants;
 import frc.robot.util.PIDConstants;
 import swervelib.math.Matter;
 
+import java.util.List;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean constants. This
  * class should not be used for any other purpose. All constants should be declared globally (i.e. public static). Do
@@ -29,6 +31,14 @@ public final class Constants {
         public static final com.pathplanner.lib.util.PIDConstants TRANSLATION_PID = new com.pathplanner.lib.util.PIDConstants(0.7, 0, 0);
         public static final com.pathplanner.lib.util.PIDConstants ANGLE_PID = new com.pathplanner.lib.util.PIDConstants(0.9, 0, 0.01);
         public static final PIDConstants ANGLE_PID_L = new PIDConstants(0.4, 0, 0.01, 0, 0.01);
+        public static final List<Double> FOUR_NOTE_ANGLES = List.of(0.12, 0.13, 0.12);
+        public static final List<Double> FOUR_NOTE_SPEEDS_TOP = List.of(8000., 8000., 8000.);
+        public static final List<Double> FOUR_NOTE_SPEEDS_BOTTOM = List.of(7000., 8000., 7000.);
+
+        public static final List<Double> THREE_NOTE_SPEEDS_TOP = List.of(10000.,10000.);
+        public static final List<Double> THREE_NOTE_SPEEDS_BOTTOM = List.of(8000.,10000.);
+        public static final List<Double> THREE_NOTE_ANGLES = List.of(0.11, 0.11);
+
     }
 //
     public static final class DrivebaseConstants {
@@ -59,10 +69,12 @@ public final class Constants {
     }
 
     public static class ShooterConstants{
+        public static double FEEDER_WIDTH = 31; // centimeter
         public static final int SHOOTER_ARM = 16;
         public static final int SHOOTER_TOP = 18;
         public static final int SHOOTER_BOTTOM = 17;
         public static final int SHOOTER_FEED = 19;
+        public static final int ANALOG_INPUT_CHANNEL = 0;
 
         public static final boolean ARM_INVERTED = true;
         public static final boolean TOP_INVERTED = true;
@@ -79,10 +91,13 @@ public final class Constants {
 
         public static final double SHOOTER_RPM = 8000;
         public static final double AMP_RPM = 5000;
-        public static final double AUTO_RPM = 6000;
-        public static final double FEEDER_SPEED = 0.7;
+        public static final double AUTO_RPM_TOP = 8000;
+        public static final double AUTO_RPM_BOT = 8000;
+        public static final double AUTO_RPM = 10000;
+        public static final double FEEDER_SPEED = 0.6;
+        public static final double FEEDER_SPEED_SLOW = 0.2;
 
-        public static final double ARM_ABSOLUTE_OFFSET = -0.23;
+        public static final double ARM_ABSOLUTE_OFFSET = -0.88;
 
         public static final double DEFAULT_SPEAKER_SHOT = 0.075;
         public static final double AMP_POS = 0.3;
@@ -98,7 +113,7 @@ public final class Constants {
         public static final boolean ARM_INVERTED = false;
         public static final boolean ROLLER_INVERTED = false;
 
-        public static final PIDConstants ARM_PID = new PIDConstants(2.5, 1.0, 0.1, 0.1, 0.01);
+        public static final PIDConstants ARM_PID = new PIDConstants(2.5, 1.0, 0.1, 0.05, 0.01);
         public static final FFConstants ARM_FF = new FFConstants(0.0, 0.05, 0.0, 0.0);
 
         public static final double ROLLER_INTAKE_SPEED = 0.45;
@@ -106,10 +121,15 @@ public final class Constants {
         public static final double ROLLER_OUTTAKE_SPEED = -0.2;
         public static final double ARM_GROUND_POSITION = -0.07;
         // public static final double ARM_INTAKE_POSITION = 0.5;
-        public static final double ARM_STOW_POSITION = 0.14;
+        public static final double ARM_STOW_POSITION = 0.16;
         public static final double ARM_TRANSFER_POSITION = 0.3;
         public static final double ARM_TOLERANCE = 0.05;
-        public static final double ARM_ABSOLUTE_OFFSET = -0.5971078;
+        public static final double ARM_ABSOLUTE_OFFSET = -0.43;
+    }
+
+    public static class ClimberConstants {
+        public static final int WINCH = 20;
+        public static final boolean WINCH_INVERTED = false;
     }
 }
 /*
