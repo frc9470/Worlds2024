@@ -65,16 +65,14 @@ public final class Constants {
         public static final double RIGHT_X_DEADBAND = 0.1;
         public static final double TURN_CONSTANT = 6;
 
-        public static final double FEEDER_DELAY = 0.6;
+        public static final double FEEDER_DELAY = 0.8;
     }
 
     public static class ShooterConstants{
-        public static double FEEDER_WIDTH = 31; // centimeter
         public static final int SHOOTER_ARM = 16;
         public static final int SHOOTER_TOP = 18;
         public static final int SHOOTER_BOTTOM = 17;
         public static final int SHOOTER_FEED = 19;
-        public static final int ANALOG_INPUT_CHANNEL = 0;
 
         public static final boolean ARM_INVERTED = true;
         public static final boolean TOP_INVERTED = true;
@@ -101,6 +99,7 @@ public final class Constants {
 
         public static final double DEFAULT_SPEAKER_SHOT = 0.075;
         public static final double AMP_POS = 0.3;
+        public static final double CLIMB_POS = 0.3;
         public static final double FEED_POS = 0.1;
         public static final double STOW_POS = -0.07;
     }

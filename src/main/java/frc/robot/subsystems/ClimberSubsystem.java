@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.ClimberConstants.*;
@@ -24,16 +25,19 @@ public class ClimberSubsystem extends SubsystemBase {
 
     private void setWinch(double speed){
         this.winch.set(speed);
+        this.winch.setIdleMode(CANSparkBase.IdleMode.kBrake);
     }
 
     private void stopWinch(){
         this.winch.set(0); // always breaking but before it's unwound
-
+        this.winch.setIdleMode(CANSparkBase.IdleMode.kBrake);
     }
 
     public Command getWinchCommand(){
         return this.runEnd(() -> this.setWinch(1.0), this::stopWinch);
     }
     public Command getWinchReleaseCommand(){
+        return new InstantCommand(this::stopWinch)
+                .andThen(new InstantCommand(() -> this.winch.setIdleMode(CANSparkBase.IdleMode.kCoast)));
     }
 }

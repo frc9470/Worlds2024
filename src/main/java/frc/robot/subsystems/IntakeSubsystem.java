@@ -42,7 +42,7 @@ public class IntakeSubsystem extends VerticalArm {
     public Command rollerOut() {return setIntake(ROLLER_OUTTAKE_SPEED);}
 
     public Command intakeDown() {
-        return armToGround().andThen(setIntake(ROLLER_INTAKE_SPEED));
+        return armToGround().andThen(this::resetEncoder).andThen(setIntake(ROLLER_INTAKE_SPEED));
     }
 
     public Command intakeUp() {

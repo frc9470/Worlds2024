@@ -107,6 +107,10 @@ public class ShooterSubsystem extends VerticalArm {
     public Command armToFeed() {return armToPos(() -> FEED_POS);}
     public Command armToStow() {return armToPos(() -> STOW_POS);}
 
+    public Command armToClimb() {
+        return armToPos(() -> CLIMB_POS);
+    }
+
     public Command armToAngle(double angle) {return armToPos(() -> angle);}
 
     public Command runFeeder(double speed) {

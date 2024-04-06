@@ -17,10 +17,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AbsoluteDriveAdv;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.*;
 
 import java.io.File;
 import java.util.List;
@@ -45,9 +42,10 @@ public class RobotContainer {
 
     private final IntakeSubsystem intake = new IntakeSubsystem();
     private final ShooterSubsystem shooter = new ShooterSubsystem();
-    private VisionSubsystem vision = new VisionSubsystem();
+    private final VisionSubsystem vision = new VisionSubsystem();
 
     private SendableChooser<Command> autoChooser;
+    private final ClimberSubsystem climber = new ClimberSubsystem();
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -101,7 +99,7 @@ public class RobotContainer {
 
         registerShooterSpeeds("3Snote", THREE_NOTE_SPEEDS_TOP, THREE_NOTE_SPEEDS_BOTTOM);
 
-        autoChooser = AutoBuilder.buildAutoChooser("wing 3");
+        autoChooser = AutoBuilder.buildAutoChooser("4Snote");
         SmartDashboard.putData("Auto Mode", autoChooser);
     }
 
@@ -133,6 +131,13 @@ public class RobotContainer {
         operatorXbox.leftTrigger()
                         .whileTrue(shooter.runShooter(AMP_RPM))
                 .onFalse(shooter.stopShooter());
+
+        operatorXbox.povUp()
+                        .whileTrue(climber.getWinchReleaseCommand().andThen(shooter.armToClimb()));
+        operatorXbox.povDown()
+                        .whileTrue(shooter.armToStow()
+                                .alongWith(climber.getWinchCommand()))
+                .onFalse(shooter.armToStow());
 
         // feed
         operatorXbox.rightBumper()
