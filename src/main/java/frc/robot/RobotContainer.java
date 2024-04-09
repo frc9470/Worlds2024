@@ -99,7 +99,7 @@ public class RobotContainer {
 
         registerShooterSpeeds("3Snote", THREE_NOTE_SPEEDS_TOP, THREE_NOTE_SPEEDS_BOTTOM);
 
-        autoChooser = AutoBuilder.buildAutoChooser("4Snote");
+        autoChooser = AutoBuilder.buildAutoChooser("3NoteClose");
         SmartDashboard.putData("Auto Mode", autoChooser);
     }
 
@@ -138,6 +138,11 @@ public class RobotContainer {
                         .whileTrue(shooter.armToStow()
                                 .alongWith(climber.getWinchCommand()))
                 .onFalse(shooter.armToStow());
+        operatorXbox.povRight()
+                        .whileTrue(intake.rollerOutFast());
+        operatorXbox.povLeft()
+                        .whileTrue(shooter.armToSave().alongWith(shooter.getFeederCommand()))
+                                .onFalse(shooter.armToStow().alongWith(shooter.getFeederCommand()));
 
         // feed
         operatorXbox.rightBumper()

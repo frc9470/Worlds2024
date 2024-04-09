@@ -106,6 +106,9 @@ public class ShooterSubsystem extends VerticalArm {
     public Command armToAmp() {return armToPos(() -> AMP_POS);}
     public Command armToFeed() {return armToPos(() -> FEED_POS);}
     public Command armToStow() {return armToPos(() -> STOW_POS);}
+    public Command armToSave() {
+        return armToPos(() -> SAVE_POS);
+    }
 
     public Command armToClimb() {
         return armToPos(() -> CLIMB_POS);

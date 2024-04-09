@@ -33,7 +33,7 @@ public final class Constants {
         public static final PIDConstants ANGLE_PID_L = new PIDConstants(0.4, 0, 0.01, 0, 0.01);
         public static final List<Double> FOUR_NOTE_ANGLES = List.of(0.12, 0.13, 0.12);
         public static final List<Double> FOUR_NOTE_SPEEDS_TOP = List.of(8000., 8000., 8000.);
-        public static final List<Double> FOUR_NOTE_SPEEDS_BOTTOM = List.of(7000., 8000., 7000.);
+        public static final List<Double> FOUR_NOTE_SPEEDS_BOTTOM = List.of(7300., 8100., 7300.);
 
         public static final List<Double> THREE_NOTE_SPEEDS_TOP = List.of(10000.,10000.);
         public static final List<Double> THREE_NOTE_SPEEDS_BOTTOM = List.of(8000.,10000.);
@@ -100,8 +100,9 @@ public final class Constants {
         public static final double DEFAULT_SPEAKER_SHOT = 0.075;
         public static final double AMP_POS = 0.3;
         public static final double CLIMB_POS = 0.3;
-        public static final double FEED_POS = 0.1;
-        public static final double STOW_POS = -0.07;
+        public static final double FEED_POS = 0.115;
+        public static final double STOW_POS = -0.00;
+        public static final double SAVE_POS = -0.07;
     }
 
     public static class IntakeConstants{
